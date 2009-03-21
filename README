@@ -1,0 +1,17 @@
+playdar.prefPane
+================
+A Mac OS X Preference Pane for the Playdar music content resolving daemon.
+
+http://www.playdar.org
+
+The prefPane wraps the daemon completely, with built in Sparkle auto-updates,
+so you can just get on with resolving content and not worry about the inner
+bits.
+
+Fork It!
+--------
+http://github.com/mxcl/playdar.prefPane/
+
+Author
+======
+Max Howell <max@methylblue.com
