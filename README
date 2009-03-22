@@ -12,6 +12,18 @@ Fork It!
 --------
 http://github.com/mxcl/playdar.prefPane/
 
+Build Process
+-------------
+You'll need to clone the git source for playdar to the same directory as the
+prefpane.
+
+$ git clone git://github.com/RJ/playdar.git
+$ git clone git://github.com/mxcl/playdar.prefpane.git
+$ ls
+playdar  playdar.prefpane
+
+Now open playdar.prefpane/playdar.prefPane.xcodeproj and build.
+
 Author
 ======
 Max Howell <max@methylblue.com
