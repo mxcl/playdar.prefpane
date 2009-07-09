@@ -37,6 +37,6 @@
 	<key>SUScheduledCheckInterval</key>
 	<string>86400</string>
 	<key>SUPublicDSAKeyFile</key>
-	<string>sparkle.pem</string>
+	<string>methylblue.pem</string>
 </dict>
 </plist>
