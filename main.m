@@ -87,8 +87,11 @@ static inline NSString* fullname()
 -(void)mainViewDidLoad
 {   
     NSFileManager* fm = [NSFileManager defaultManager];
-    if([fm fileExistsAtPath:daemon_script_path()] == false)
+    NSString* scriptpath = daemon_script_path();
+    if([fm fileExistsAtPath:scriptpath] == false){
+        [fm createDirectoryAtPath:[scriptpath stringByDeletingLastPathComponent] attributes:nil];
         [self writeDaemonScript];
+    }
     NSString* ini = ini_path();
     if([fm fileExistsAtPath:ini] == false){
         NSArray* args = [NSArray arrayWithObjects: fullname(), db_path(), ini, nil];
@@ -96,7 +99,7 @@ static inline NSString* fullname()
     }
 
     [[popup menu] addItem:[NSMenuItem separatorItem]];
-    [[[popup menu] addItemWithTitle:@"Other..." action:@selector(onSelect:) keyEquivalent:@""] setTarget:self];
+    [[[popup menu] addItemWithTitle:@"Other…" action:@selector(onSelect:) keyEquivalent:@""] setTarget:self];
 
     NSString* home = NSHomeDirectory();
     [self addFolder:[home stringByAppendingPathComponent:@"Music"] setSelected:true];
@@ -292,7 +295,11 @@ static inline NSString* fullname()
     }
     @catch (NSException* e)
     {
-        [[NSAlert alertWithMessageText:[e reason]] runModal];
+        [[NSAlert alertWithMessageText:[e reason]
+                         defaultButton:nil
+                       alternateButton:nil
+                           otherButton:nil
+             informativeTextWithFormat:nil] runModal];
     }
     return task;
 }
