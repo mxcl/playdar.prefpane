@@ -306,7 +306,7 @@ static inline NSString* fullname()
 
 -(IBAction)onHelp:(id)sender
 {
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://playdar.org"]];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://methylblue.com/playdar/faq.php"]];
 }
 
 -(IBAction)onAdvanced:(id)sender
