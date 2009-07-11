@@ -1,0 +1,3 @@
+[submodule "playdar"]
+	path = playdar
+	url = git://github.com/mxcl/playdar.git
