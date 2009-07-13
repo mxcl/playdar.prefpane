@@ -12,6 +12,7 @@ clean:
 
 $(MacOS)/PlaydarPrefPanePlugin: $(MacOS)/Playdar
 	mv $< $@
+	touch $@
 $(MacOS)/plugins:
 	mkdir $@
 $(MacOS)/plugins/%.resolver: playdar/plugins/%.resolver | $(MacOS)/plugins
