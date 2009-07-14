@@ -10,19 +10,17 @@ bits.
 
 Fork It!
 --------
-http://github.com/mxcl/playdar.prefPane/
+http://github.com/mxcl/playdar.prefpane/
 
 Build Process
 -------------
-You'll need to clone the git source for playdar to the same directory as the
-prefpane.
+$ git submodules init
+$ git submodules update
 
-$ git clone git://github.com/RJ/playdar.git
-$ git clone git://github.com/mxcl/playdar.prefpane.git
-$ ls
-playdar  playdar.prefpane
+Now edit Playdar.prefPane.xcodeproj/Makefile so that boost and taglib are
+referenced correctly (or just use Homebrew! http://github.com/mxcl/homebrew).
 
-Now open playdar.prefpane/playdar.prefPane.xcodeproj and build.
+Now you can open the Xcode project and it should all build just fine.
 
 Author
 ======

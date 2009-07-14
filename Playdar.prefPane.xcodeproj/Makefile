@@ -6,6 +6,9 @@ DYLIBS=$(MacOS)/libboost_date_time.dylib $(MacOS)/libboost_regex.dylib $(MacOS)/
 EXECUTABLES=$(MacOS)/PlaydarPrefPanePlugin $(MacOS)/playdard $(MacOS)/tagger $(MacOS)/scanner
 PLUGINS=$(MacOS)/plugins/audioscrobbler.resolver $(MacOS)/plugins/local.resolver $(MacOS)/plugins/api.resolver $(MacOS)/plugins/boffin.resolver $(MacOS)/plugins/lan.resolver
 
+BOOST_PREFIX=/usr/local/Cellar/boost/1.39.0
+TAGLIB_PREFIX=/usr/local/Cellar/taglib/1.5
+
 force: $(EXECUTABLES) $(DYLIBS) $(PLUGINS) $(MacOS)/www
 clean:
 	rm $(EXECUTABLES) $(DYLIBS) $(PLUGINS) $(MacOS)/www
@@ -33,25 +36,25 @@ $(MacOS)/scanner: playdar/bin/scanner
 $(MacOS)/www: playdar/www
 	rm -rf $@ && cp -R $< $@
 
-$(MacOS)/libboost_date_time.dylib: /usr/local/Cellar/boost/1.39.0/lib/libboost_date_time.dylib
+$(MacOS)/libboost_date_time.dylib: $(BOOST_PREFIX)/lib/libboost_date_time.dylib
 	cp $< $@
 	$(INT) $(@F)
-$(MacOS)/libboost_regex.dylib: /usr/local/Cellar/boost/1.39.0/lib/libboost_regex.dylib
+$(MacOS)/libboost_regex.dylib: $(BOOST_PREFIX)/lib/libboost_regex.dylib
 	cp $< $@
 	$(INT) $(@F)
-$(MacOS)/libboost_filesystem.dylib: /usr/local/Cellar/boost/1.39.0/lib/libboost_filesystem.dylib
+$(MacOS)/libboost_filesystem.dylib: $(BOOST_PREFIX)/lib/libboost_filesystem.dylib
 	cp $< $@
 	$(INT) $(@F)
-$(MacOS)/libboost_system.dylib: /usr/local/Cellar/boost/1.39.0/lib/libboost_system.dylib
+$(MacOS)/libboost_system.dylib: $(BOOST_PREFIX)/lib/libboost_system.dylib
 	cp $< $@
 	$(INT) $(@F)
-$(MacOS)/libboost_program_options.dylib: /usr/local/Cellar/boost/1.39.0/lib/libboost_program_options.dylib
+$(MacOS)/libboost_program_options.dylib: $(BOOST_PREFIX)/lib/libboost_program_options.dylib
 	cp $< $@
 	$(INT) $(@F)
-$(MacOS)/libboost_thread.dylib: /usr/local/Cellar/boost/1.39.0/lib/libboost_thread.dylib
+$(MacOS)/libboost_thread.dylib: $(BOOST_PREFIX)/lib/libboost_thread.dylib
 	cp $< $@
 	$(INT) $(@F)
-$(MacOS)/libtag.1.dylib: /usr/local/Cellar/taglib/1.5/lib/libtag.1.5.0.dylib
+$(MacOS)/libtag.1.dylib: $(TAGLIB_PREFIX)/lib/libtag.1.5.0.dylib
 	cp $< $@
 	$(INT) $(@F)
 

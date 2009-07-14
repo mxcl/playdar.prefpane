@@ -13,5 +13,5 @@ end
 
 lines.each do |dylib|
   dylib=dylib.strip.split[0]
-  `install_name_tool -change #{dylib} @executable_path/#{File.basename dylib} #{ARGV[0]}` unless dylib =~ %r[^/usr/lib]
+  `install_name_tool -change #{dylib} @executable_path/#{File.basename dylib} #{ARGV[0]}` unless dylib =~ %r[^/usr/lib] or dylib =~ %r[^/System]
 end
