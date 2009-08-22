@@ -215,19 +215,21 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
 -(void)onEnable:(id)sender
 {       
     if([enable state] == NSOffState){
+        
+        if(daemon_task){
+            [enable setState:NSOnState];
+            [spinner startAnimation:self];
+            [daemon_task terminate];
+        }
         // if we can't kill playdar don't pretend we did, unless the problem is
         // that our pid is invalid
-        // FIXME I'm not so sure if KILL is safe... what's CTRL-C do?
-        if(pid>0 && kill(pid, SIGKILL)==-1 && errno!=ESRCH){
+        // FIXME I'm not so sure if KILL is safe... what's CTRL-C do?        
+        else if(pid>0 && kill(pid, SIGKILL)==-1 && errno!=ESRCH){
             [enable setState:NSOnState];
             //TODO beep, show message
-            return;
         }
-
-        START_POLL;
-        pid=0;
     }else{
-        [timer invalidate]; 
+        [timer invalidate];
         timer=nil;
         
         pid = playdar_pid(); // for some reason assignment doesn't happen inside if statements..
@@ -277,9 +279,8 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
             // unexpectedly there is already a playdar instance running!
             kqueue_watch_pid(pid, self);
         }
+        [self representHiddenParts];
     }
-
-    [self representHiddenParts];
 }
 
 -(void)daemonTerminated:(NSNotification*)note
@@ -290,6 +291,7 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     daemon_task = nil;
     pid = 0;
     
+    [spinner stopAnimation:self];
     [enable setState:NSOffState];
     [self representHiddenParts];
     START_POLL;
