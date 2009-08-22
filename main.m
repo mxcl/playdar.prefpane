@@ -434,7 +434,7 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
 {
     return [[NSUserDefaults standardUserDefaults] boolForKey:MBHomemade]
          ? [[[NSUserDefaults standardUserDefaults] stringForKey:MBHomemadePath] stringByStandardizingPath]
-         : [[[self bundle] bundlePath] stringByAppendingPathComponent:@"Contents/MacOS/playdar"];
+         : [[[self bundle] bundlePath] stringByAppendingPathComponent:@"Contents/Daemon/playdar"];
 }
 
 -(void)writeDaemonScript

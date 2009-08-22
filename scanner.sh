@@ -9,8 +9,8 @@ sqlite3 "$2" < schema.sql
 
 # go
 tmp=`mktemp -t playdar`
-echo "'"`pwd`"/../MacOS/scanner' '$2' '$1'" > "$tmp"
-echo "'"`pwd`"/../MacOS/tagger' '$2' '$d/boffin.db'" >> "$tmp"
+echo "'"`pwd`"/../Daemon/scanner' '$2' '$1'" > "$tmp"
+echo "'"`pwd`"/../Daemon/tagger' '$2' '$d/boffin.db'" >> "$tmp"
 echo "rm '$tmp'" >> "$tmp"
 chmod u+x "$tmp"
-open -a Terminal "$tmp"
+exec open -a Terminal "$tmp"

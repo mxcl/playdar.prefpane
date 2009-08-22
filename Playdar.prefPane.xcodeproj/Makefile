@@ -1,60 +1,61 @@
-MacOS=$(BUILT_PRODUCTS_DIR)/$(EXECUTABLE_FOLDER_PATH)
+d=$(BUILT_PRODUCTS_DIR)/$(EXECUTABLE_FOLDER_PATH)/../Daemon
 Resources=$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)
-INT=cd $(MacOS) && $(SRCROOT)/Playdar.prefPane.xcodeproj/install_name_tool
+INT=cd $(d) && $(SRCROOT)/Playdar.prefPane.xcodeproj/install_name_tool
 
-DYLIBS=$(MacOS)/libboost_date_time.dylib $(MacOS)/libboost_regex.dylib $(MacOS)/libtag.1.dylib $(MacOS)/libboost_filesystem.dylib $(MacOS)/libboost_system.dylib $(MacOS)/libboost_program_options.dylib $(MacOS)/libboost_thread.dylib
-EXECUTABLES=$(MacOS)/PlaydarPrefPanePlugin $(MacOS)/playdard $(MacOS)/tagger $(MacOS)/scanner
-PLUGINS=$(MacOS)/plugins/audioscrobbler.resolver $(MacOS)/plugins/local.resolver $(MacOS)/plugins/api.resolver $(MacOS)/plugins/boffin.resolver $(MacOS)/plugins/lan.resolver
+DYLIBS=$(d)/libboost_date_time.dylib $(d)/libboost_regex.dylib $(d)/libtag.1.dylib $(d)/libboost_filesystem.dylib $(d)/libboost_system.dylib $(d)/libboost_program_options.dylib $(d)/libboost_thread.dylib
+EXECUTABLES=$(d)/playdar $(d)/tagger $(d)/scanner
+PLUGINS=$(d)/plugins/audioscrobbler.resolver $(d)/plugins/local.resolver $(d)/plugins/api.resolver $(d)/plugins/boffin.resolver $(d)/plugins/lan.resolver
 
+# this is the only bit specific to my machine, please fix!
 BOOST_PREFIX=/usr/local/Cellar/boost/1.39.0
 TAGLIB_PREFIX=/usr/local/Cellar/taglib/1.5
 
-force: $(EXECUTABLES) $(DYLIBS) $(PLUGINS) $(MacOS)/www
+force: $(EXECUTABLES) $(DYLIBS) $(PLUGINS) $(d)/www
 clean:
-	rm $(EXECUTABLES) $(DYLIBS) $(PLUGINS) $(MacOS)/www
+	rm $(EXECUTABLES) $(DYLIBS) $(PLUGINS) $(d)/www
 
-$(MacOS)/PlaydarPrefPanePlugin: $(MacOS)/Playdar
-	mv $< $@
-	touch $@
-$(MacOS)/plugins:
+$(d):
+	mkdir -p $@
+
+$(d)/plugins: | $(d)
 	mkdir $@
-$(MacOS)/plugins/%.resolver: playdar/plugins/%.resolver | $(MacOS)/plugins
+$(d)/plugins/%.resolver: playdar/plugins/%.resolver | $(d)/plugins
 	cp $< $@
 	$(INT) plugins/$(@F)
-$(MacOS)/playdard: playdar/bin/playdar
+$(d)/playdar: playdar/bin/playdar | $(d)
 	cp $< $@
 	strip -SX $@
 	$(INT) $@
-$(MacOS)/tagger: playdar/bin/tagger
+$(d)/tagger: playdar/bin/tagger | $(d)
 	cp $< $@
 	strip -SX $@
 	$(INT) $@
-$(MacOS)/scanner: playdar/bin/scanner
+$(d)/scanner: playdar/bin/scanner | $(d)
 	cp $< $@
 	strip -SX $@
 	$(INT) $@
-$(MacOS)/www: playdar/www
+$(d)/www: playdar/www | $(d)
 	rm -rf $@ && cp -R $< $@
 
-$(MacOS)/libboost_date_time.dylib: $(BOOST_PREFIX)/lib/libboost_date_time.dylib
+$(d)/libboost_date_time.dylib: $(BOOST_PREFIX)/lib/libboost_date_time.dylib | $(d)
 	cp $< $@
 	$(INT) $(@F)
-$(MacOS)/libboost_regex.dylib: $(BOOST_PREFIX)/lib/libboost_regex.dylib
+$(d)/libboost_regex.dylib: $(BOOST_PREFIX)/lib/libboost_regex.dylib | $(d)
 	cp $< $@
 	$(INT) $(@F)
-$(MacOS)/libboost_filesystem.dylib: $(BOOST_PREFIX)/lib/libboost_filesystem.dylib
+$(d)/libboost_filesystem.dylib: $(BOOST_PREFIX)/lib/libboost_filesystem.dylib | $(d)
 	cp $< $@
 	$(INT) $(@F)
-$(MacOS)/libboost_system.dylib: $(BOOST_PREFIX)/lib/libboost_system.dylib
+$(d)/libboost_system.dylib: $(BOOST_PREFIX)/lib/libboost_system.dylib | $(d)
 	cp $< $@
 	$(INT) $(@F)
-$(MacOS)/libboost_program_options.dylib: $(BOOST_PREFIX)/lib/libboost_program_options.dylib
+$(d)/libboost_program_options.dylib: $(BOOST_PREFIX)/lib/libboost_program_options.dylib | $(d)
 	cp $< $@
 	$(INT) $(@F)
-$(MacOS)/libboost_thread.dylib: $(BOOST_PREFIX)/lib/libboost_thread.dylib
+$(d)/libboost_thread.dylib: $(BOOST_PREFIX)/lib/libboost_thread.dylib | $(d)
 	cp $< $@
 	$(INT) $(@F)
-$(MacOS)/libtag.1.dylib: $(TAGLIB_PREFIX)/lib/libtag.1.5.0.dylib
+$(d)/libtag.1.dylib: $(TAGLIB_PREFIX)/lib/libtag.1.5.0.dylib | $(d)
 	cp $< $@
 	$(INT) $(@F)
 
