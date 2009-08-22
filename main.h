@@ -29,6 +29,9 @@
     IBOutlet NSButton* demos;
     IBOutlet NSTextField* info;
     IBOutlet NSWindow* advanced_window;
+    
+    NSTask* daemon_task;
+    
     pid_t pid;
 }
 
@@ -45,8 +48,6 @@
 -(void)openPanelDidEnd:(NSOpenPanel*)panel
             returnCode:(int)returnCode
            contextInfo:(void*)contextInfo;
-
-
 
 -(IBAction)onSelect:(id)sender;
 -(IBAction)onScan:(id)sender;

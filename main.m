@@ -82,6 +82,40 @@ static inline NSString* fullname()
 
 
 
+static void kqueue_termination_callback(CFFileDescriptorRef f, CFOptionFlags callBackTypes, void* self)
+{
+    [(id)self performSelector:@selector(daemonTerminated:) withObject:nil];
+}
+
+static inline void kqueue_watch_pid(pid_t pid, id self)
+{
+    int                     kq;
+    struct kevent           changes;
+    CFFileDescriptorContext context = { 0, self, NULL, NULL, NULL };
+    CFRunLoopSourceRef      rls;
+
+    // Create the kqueue and set it up to watch for SIGCHLD. Use the 
+    // new-in-10.5 EV_RECEIPT flag to ensure that we get what we expect.
+
+    kq = kqueue();
+
+    EV_SET(&changes, pid, EVFILT_PROC, EV_ADD | EV_RECEIPT, NOTE_EXIT, 0, NULL);
+    (void) kevent(kq, &changes, 1, &changes, 1, NULL);
+
+    // Wrap the kqueue in a CFFileDescriptor (new in Mac OS X 10.5!). Then 
+    // create a run-loop source from the CFFileDescriptor and add that to the 
+    // runloop.
+    
+    CFFileDescriptorRef ref;
+    ref = CFFileDescriptorCreate(NULL, kq, true, kqueue_termination_callback, &context);
+    rls = CFFileDescriptorCreateRunLoopSource(NULL, ref, 0);
+    CFRunLoopAddSource(CFRunLoopGetCurrent(), rls, kCFRunLoopDefaultMode);
+    CFRelease(rls);
+    
+    CFFileDescriptorEnableCallBacks(ref, kCFFileDescriptorReadCallBack);
+}
+
+
 @implementation OrgPlaydarPreferencePane
 
 -(void)mainViewDidLoad
@@ -107,6 +141,9 @@ static inline NSString* fullname()
 
     pid = playdar_pid();
     if(pid){
+        // watch the pid for termination
+        kqueue_watch_pid(pid, self);
+        
         [enable setState:NSOnState];
         [demos setHidden:false];
         [info setHidden:false];
@@ -140,55 +177,8 @@ static inline NSString* fullname()
     [self execScript:@"scanner.sh" withArgs:args];
 }
 
--(void)onEnable:(id)sender
-{    
-    if([enable state] == NSOffState){
-        // if we can't kill playdar don't pretend we did, unless the problem is
-        // that our pid is invalid
-        // FIXME I'm not so sure if KILL is safe... what's CTRL-C do?
-        if(pid>0 && kill(pid, SIGKILL)==-1 && errno!=ESRCH){
-            [enable setState:NSOnState];
-            //TODO beep, show message
-            return;
-        }
-        pid=0;
-    }else{
-        pid = playdar_pid(); // for some reason assignment doesn't happen inside if statements..
-        if(!pid){
-            NSTask* task=[[NSTask alloc] init];
-            @try{
-                if([[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask){
-                    [task setLaunchPath:@"/usr/bin/open"];
-                    [task setArguments:[NSArray arrayWithObjects:@"-a", @"Terminal", daemon_script_path(), nil]];
-                    [task launch];
-                    [task waitUntilExit];
-                    pid = -100; //HACK FIXME
-                }else{
-                    [task setLaunchPath:daemon_script_path()];
-                    [task launch];
-                    pid = [task processIdentifier];
-                }
-            }
-            @catch(NSException* e)
-            {
-                NSString* msg = @"The file at “";
-                msg = [msg stringByAppendingString:[task launchPath]];
-                msg = [msg stringByAppendingString:@"” could not be executed."];
-                
-                NSBeginAlertSheet(@"Could not start Playdar",
-                                  nil, nil, nil,
-                                  [[self mainView] window],
-                                  self,
-                                  nil, nil,
-                                  nil,
-                                  msg );
-            }
-            @finally {
-                [task release];
-            }
-        }
-    }
-    
+-(void)representHiddenParts
+{   
     bool const is_dead = pid == 0;
     
     // eg. if we're hidden, and playdar isn't running, then GUI representation is already correct
@@ -203,8 +193,83 @@ static inline NSString* fullname()
         rect.origin.y -= step;
         [w setFrame:rect display:true animate:true];
     }
-    if([self isLoginItem] == (pid == 0))
-        [self setLoginItem:pid];
+    if([self isLoginItem] == is_dead)
+        [self setLoginItem:!is_dead];
+}
+
+-(void)onEnable:(id)sender
+{       
+    if([enable state] == NSOffState){
+        // if we can't kill playdar don't pretend we did, unless the problem is
+        // that our pid is invalid
+        // FIXME I'm not so sure if KILL is safe... what's CTRL-C do?
+        if(pid>0 && kill(pid, SIGKILL)==-1 && errno!=ESRCH){
+            [enable setState:NSOnState];
+            //TODO beep, show message
+            return;
+        }
+        pid=0;
+    }else{
+        pid = playdar_pid(); // for some reason assignment doesn't happen inside if statements..
+        if(!pid){
+            daemon_task=[[NSTask alloc] init];
+            @try{
+                if([[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask){
+                    [daemon_task setLaunchPath:@"/usr/bin/open"];
+                    [daemon_task setArguments:[NSArray arrayWithObjects:@"-a", @"Terminal", daemon_script_path(), nil]];
+                    [daemon_task launch];
+                    [daemon_task waitUntilExit];
+                    [daemon_task release];
+                    daemon_task=nil;
+                    pid = -100; //HACK FIXME
+                }else{
+                    [daemon_task setLaunchPath:daemon_script_path()];
+                    
+                    [[NSNotificationCenter defaultCenter] addObserver:self 
+                                                             selector:@selector(daemonTerminated:) 
+                                                                 name:NSTaskDidTerminateNotification 
+                                                               object:daemon_task];
+                    
+                    [daemon_task launch];
+                    pid = [daemon_task processIdentifier];
+                }
+            }
+            @catch(NSException* e)
+            {
+                NSString* msg = @"The file at “";
+                msg = [msg stringByAppendingString:[daemon_task launchPath]];
+                msg = [msg stringByAppendingString:@"” could not be executed."];
+                
+                NSBeginAlertSheet(@"Could not start Playdar",
+                                  nil, nil, nil,
+                                  [[self mainView] window],
+                                  self,
+                                  nil, nil,
+                                  nil,
+                                  msg );
+            }
+            @finally {
+                [daemon_task release];
+            }
+        }else{
+            // unexpectedly there is already a playdar instance running!
+            kqueue_watch_pid(pid, self);
+        }
+    }
+
+    [self representHiddenParts];
+}
+
+-(void)daemonTerminated:(NSNotification*)note
+{   
+    [[NSNotificationCenter defaultCenter] removeObserver:self 
+                                                    name:NSTaskDidTerminateNotification 
+                                                  object:daemon_task];
+    daemon_task = nil;
+    pid = 0;
+    
+    [enable setState:NSOffState];
+    [self representHiddenParts];
 }
 
 -(void)setLoginItem:(bool)enabled
