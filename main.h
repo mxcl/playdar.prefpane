@@ -29,6 +29,7 @@
     IBOutlet NSButton* demos;
     IBOutlet NSTextField* info;
     IBOutlet NSWindow* advanced_window;
+    IBOutlet NSProgressIndicator* spinner; 
     
     NSTask* daemon_task;
     NSTimer* timer;
