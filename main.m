@@ -215,18 +215,19 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
 -(void)onEnable:(id)sender
 {       
     if([enable state] == NSOffState){
-        
         if(daemon_task){
-            [enable setState:NSOnState];
-            [spinner startAnimation:self];
+            [spinner performSelector:@selector(startAnimation:) withObject:self afterDelay:0.3];
             [daemon_task terminate];
         }
-        // if we can't kill playdar don't pretend we did, unless the problem is
-        // that our pid is invalid
-        // FIXME I'm not so sure if KILL is safe... what's CTRL-C do?        
-        else if(pid>0 && kill(pid, SIGKILL)==-1 && errno!=ESRCH){
+        else if(pid == 0)
+            ; // state machine error!
+        else if(kill(pid, SIGKILL) == -1 && errno != ESRCH){
             [enable setState:NSOnState];
-            //TODO beep, show message
+            NSRunCriticalAlertPanel(@"Could not kill daemon",
+                                    @"Perhaps you don't have the right permissions?", nil, nil, nil);
+        }else{
+            // the kqueue event will tell us when the process exits
+            [spinner performSelector:@selector(startAnimation:) withObject:self afterDelay:0.3];
         }
     }else{
         [timer invalidate];
@@ -240,12 +241,20 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
                     [daemon_task setLaunchPath:@"/usr/bin/open"];
                     [daemon_task setArguments:[NSArray arrayWithObjects:daemon_script_path(), nil]];
                     [daemon_task launch];
+                    pid = -100; //HACK
+                    [self representHiddenParts]; //adds some delay which is required to get at pid
+                    pid = playdar_pid();
                     [daemon_task waitUntilExit];
                     [daemon_task release];
-                    sleep(2); //HACK because open returns before playdar is seemingly registered with kernel!
                     daemon_task=nil;
-                    pid = playdar_pid();
-                    kqueue_watch_pid(pid, self);
+
+                    if(pid)
+                        kqueue_watch_pid(pid, self);
+                    else {
+                        [enable setState:NSOffState];
+                        [self representHiddenParts];
+                    }
+                    return;
                 }else{
                     [daemon_task setLaunchPath:daemon_script_path()];
                     
@@ -291,8 +300,10 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     daemon_task = nil;
     pid = 0;
     
+    [NSObject cancelPreviousPerformRequestsWithTarget:spinner];
     [spinner stopAnimation:self];
     [enable setState:NSOffState];
+    [enable setEnabled:true];
     [self representHiddenParts];
     START_POLL;
 }
@@ -385,11 +396,8 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     }
     @catch (NSException* e)
     {
-        [[NSAlert alertWithMessageText:[e reason]
-                         defaultButton:nil
-                       alternateButton:nil
-                           otherButton:nil
-             informativeTextWithFormat:nil] runModal];
+        NSRunCriticalAlertPanel(@"Could not run script", 
+                                [e reason], nil, nil, nil);
     }
     return task;
 }
