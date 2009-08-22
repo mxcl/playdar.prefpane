@@ -410,7 +410,7 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
 
 -(IBAction)onCloseAdvanced:(id)sender
 {
-    if([[NSUserDefaults standardUserDefaults] boolForKey:@"Homemade"]){
+    if([[NSUserDefaults standardUserDefaults] boolForKey:MBHomemade]){
         NSString* path = [self bin]; //use path that script eventually uses
         if([[NSFileManager defaultManager] isExecutableFileAtPath:path] == false){
             NSRunAlertPanel( @"Bad path", [path stringByAppendingString:@" isn't playdar"], nil, nil, nil );
@@ -432,15 +432,15 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
 
 -(NSString*)bin
 {
-    return [[NSUserDefaults standardUserDefaults] boolForKey:@"Homemade"]
-         ? [[[NSUserDefaults standardUserDefaults] stringForKey:@"HomemadePath"] stringByStandardizingPath]
+    return [[NSUserDefaults standardUserDefaults] boolForKey:MBHomemade]
+         ? [[[NSUserDefaults standardUserDefaults] stringForKey:MBHomemadePath] stringByStandardizingPath]
          : [[[self bundle] bundlePath] stringByAppendingPathComponent:@"Contents/MacOS/playdar"];
 }
 
 -(void)writeDaemonScript
 {
     NSString* path = daemon_script_path();
-    NSString* cd = [[NSUserDefaults standardUserDefaults] boolForKey:@"Homemade"]
+    NSString* cd = [[NSUserDefaults standardUserDefaults] boolForKey:MBHomemade]
             ? @"cd `dirname $playdar`/..\n"
             : @"cd `dirname $playdar`\n";
     
