@@ -115,6 +115,8 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     CFFileDescriptorEnableCallBacks(ref, kCFFileDescriptorReadCallBack);
 }
 
+#define START_POLL timer = [NSTimer scheduledTimerWithTimeInterval:0.4 target:self selector:@selector(poll:) userInfo:nil repeats:true];
+
 
 @implementation OrgPlaydarPreferencePane
 
@@ -151,6 +153,8 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
         size.height += 20;
         [[self mainView] setFrameSize:size];
     }
+    else
+        START_POLL;
 
 ////// Sparkle
     SUUpdater* updater = [SUUpdater updaterForBundle:[self bundle]];
@@ -197,6 +201,17 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
         [self setLoginItem:!is_dead];
 }
 
+-(void)poll:(NSTimer*)_timer
+{
+    if(pid=playdar_pid()){
+        [timer invalidate];
+        timer=nil;
+        kqueue_watch_pid(pid, self);
+        [enable setState:NSOnState];
+        [self representHiddenParts];
+    }
+}
+
 -(void)onEnable:(id)sender
 {       
     if([enable state] == NSOffState){
@@ -208,20 +223,27 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
             //TODO beep, show message
             return;
         }
+
+        START_POLL;
         pid=0;
     }else{
+        [timer invalidate]; 
+        timer=nil;
+        
         pid = playdar_pid(); // for some reason assignment doesn't happen inside if statements..
         if(!pid){
             daemon_task=[[NSTask alloc] init];
             @try{
                 if([[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask){
                     [daemon_task setLaunchPath:@"/usr/bin/open"];
-                    [daemon_task setArguments:[NSArray arrayWithObjects:@"-a", @"Terminal", daemon_script_path(), nil]];
+                    [daemon_task setArguments:[NSArray arrayWithObjects:daemon_script_path(), nil]];
                     [daemon_task launch];
                     [daemon_task waitUntilExit];
                     [daemon_task release];
+                    sleep(2); //HACK because open returns before playdar is seemingly registered with kernel!
                     daemon_task=nil;
-                    pid = -100; //HACK FIXME
+                    pid = playdar_pid();
+                    kqueue_watch_pid(pid, self);
                 }else{
                     [daemon_task setLaunchPath:daemon_script_path()];
                     
@@ -270,6 +292,7 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     
     [enable setState:NSOffState];
     [self representHiddenParts];
+    START_POLL;
 }
 
 -(void)setLoginItem:(bool)enabled

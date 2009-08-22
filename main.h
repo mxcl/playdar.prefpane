@@ -31,7 +31,7 @@
     IBOutlet NSWindow* advanced_window;
     
     NSTask* daemon_task;
-    
+    NSTimer* timer;
     pid_t pid;
 }
 
