@@ -3,7 +3,7 @@ Resources=$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)
 INT=cd $(MacOS) && $(SRCROOT)/Playdar.prefPane.xcodeproj/install_name_tool
 
 DYLIBS=$(MacOS)/libboost_date_time.dylib $(MacOS)/libboost_regex.dylib $(MacOS)/libtag.1.dylib $(MacOS)/libboost_filesystem.dylib $(MacOS)/libboost_system.dylib $(MacOS)/libboost_program_options.dylib $(MacOS)/libboost_thread.dylib
-EXECUTABLES=$(MacOS)/PlaydarPrefPanePlugin $(MacOS)/playdard $(MacOS)/tagger $(MacOS)/scanner
+EXECUTABLES=$(MacOS)/playdar $(MacOS)/tagger $(MacOS)/scanner
 PLUGINS=$(MacOS)/plugins/audioscrobbler.resolver $(MacOS)/plugins/local.resolver $(MacOS)/plugins/api.resolver $(MacOS)/plugins/boffin.resolver $(MacOS)/plugins/lan.resolver
 
 BOOST_PREFIX=/usr/local/Cellar/boost/1.39.0
@@ -13,15 +13,12 @@ force: $(EXECUTABLES) $(DYLIBS) $(PLUGINS) $(MacOS)/www
 clean:
 	rm $(EXECUTABLES) $(DYLIBS) $(PLUGINS) $(MacOS)/www
 
-$(MacOS)/PlaydarPrefPanePlugin: $(MacOS)/Playdar
-	mv $< $@
-	touch $@
 $(MacOS)/plugins:
 	mkdir $@
 $(MacOS)/plugins/%.resolver: playdar/plugins/%.resolver | $(MacOS)/plugins
 	cp $< $@
 	$(INT) plugins/$(@F)
-$(MacOS)/playdard: playdar/bin/playdar
+$(MacOS)/playdar: playdar/bin/playdar
 	cp $< $@
 	strip -SX $@
 	$(INT) $@

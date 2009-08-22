@@ -76,7 +76,7 @@
 		63DFABE60F5CAAA1001855D4 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
 		63E2F5330F60D5F200738CA2 /* scanner.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = scanner.sh; sourceTree = "<group>"; };
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		8D202CF80486D31800D8A456 /* Playdar.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Playdar.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D202CF80486D31800D8A456 /* PlaydarPrefPanePlugin.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PlaydarPrefPanePlugin.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 		F506C03C013D9D7901CA16C8 /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
 		F506C03D013D9D7901CA16C8 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -163,7 +163,7 @@
 		19C28FB8FE9D52D311CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8D202CF80486D31800D8A456 /* Playdar.prefPane */,
+				8D202CF80486D31800D8A456 /* PlaydarPrefPanePlugin.prefPane */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -208,7 +208,7 @@
 			name = PlaydarPrefPanePlugin;
 			productInstallPath = "$(HOME)/Library/PreferencePanes";
 			productName = moose;
-			productReference = 8D202CF80486D31800D8A456 /* Playdar.prefPane */;
+			productReference = 8D202CF80486D31800D8A456 /* PlaydarPrefPanePlugin.prefPane */;
 			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
@@ -256,7 +256,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "set -o errexit\n\n# OSX copies special file attributes to ._files when you tar!\nexport COPY_EXTENDED_ATTRIBUTES_DISABLE=true\nexport COPYFILE_DISABLE=true\n\n[ $BUILD_STYLE = Release ] || { echo Distribution target requires \"'Release'\" build style; false; }\n\nVERSION=$(defaults read \"$BUILT_PRODUCTS_DIR/$PROJECT_NAME/Contents/Info\" CFBundleVersion)\nDOWNLOAD_BASE_URL=\"http://www.methylblue.com/playdar\"\n\nARCHIVE_FILENAME=\"$PROJECT_NAME-$VERSION.zip\"\nDOWNLOAD_URL=\"$DOWNLOAD_BASE_URL/$ARCHIVE_FILENAME\"\nKEYCHAIN_PRIVKEY_NAME=\"Sparkle Private Key\"\n\nWD=$PWD\ncd \"$BUILT_PRODUCTS_DIR\"\nrm -f \"$PROJECT_NAME\"*.zip\nditto -ck --keepParent \"$PROJECT_NAME\" \"$ARCHIVE_FILENAME\"\n\nSIZE=$(stat -f %z \"$ARCHIVE_FILENAME\")\nPUBDATE=$(date +\"%a, %d %b %G %T %z\")\nSIGNATURE=$(\n\topenssl dgst -sha1 -binary < \"$ARCHIVE_FILENAME\" \\\n\t| openssl dgst -dss1 -sign <(security find-generic-password -g -s \"$KEYCHAIN_PRIVKEY_NAME\" 2>&1 1>/dev/null | perl -pe '($_) = /\"(.+)\"/; s/\\\\012/\\n/g') \\\n\t| openssl enc -base64\n)\n\n[ $SIGNATURE ] || { echo Unable to load signing private key with name \"'$KEYCHAIN_PRIVKEY_NAME'\" from keychain; false; }\n\ncat <<EOF > appcast.xml\n<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rss version=\"2.0\" xmlns:sparkle=\"http://www.andymatuschak.org/xml-namespaces/sparkle\"\txmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n\t<channel>\n\t\t<title>Playdar.prefPane Changelog</title>\n\t\t<link>http://www.methylblue.com/playdar/appcast.xml</link>\n\t\t<description>Most recent changes with links to updates.</description>\n\t\t<language>en</language>\n\t\t<item>\n\t\t\t<title>Version $VERSION</title>\n\t\t\t<pubDate>$PUBDATE</pubDate>\n\t\t\t<description>\n\t\t\t\t<![CDATA[<a style='float:left;margin-right:1em' href='http://www.flickr.com/photos/30941515@N07/3352597643/'><img src='http://farm2.static.flickr.com/1401/3352597643_a0f283a90b_m.jpg'></a><h2></h2>]]>\n\t\t\t</description>\n\t\t\t<enclosure\n\t\t\t\turl=\"$DOWNLOAD_URL\"\n\t\t\t\tsparkle:version=\"$VERSION\"\n\t\t\t\ttype=\"application/octet-stream\"\n\t\t\t\tlength=\"$SIZE\"\n\t\t\t\tsparkle:dsaSignature=\"$SIGNATURE\"\n\t\t\t/>\n\t\t</item>\n\t</channel>\n</rss>\nEOF\n\necho scp \"'$PWD/$ARCHIVE_FILENAME'\" \"'$PWD/appcast.xml'\" methylblue.com:public_html/playdar\n";
+			shellScript = "set -o errexit\n\n# OSX copies special file attributes to ._files when you tar!\nexport COPY_EXTENDED_ATTRIBUTES_DISABLE=true\nexport COPYFILE_DISABLE=true\n\n[ $BUILD_STYLE = Release ] || { echo Distribution target requires \"'Release'\" build style; false; }\n\n# this is because Xcode sucks and insists on calling the bundle after the plugin name\n# and we have to have a strange plugin name as the playdar daemon is \"playdar\" and we stick both in MacOS\nmv \"$BUILT_PRODUCTS_DIR/PlaydarPrefPanePlugin.prefPane\" \"$BUILT_PRODUCTS_DIR/$PROJECT_NAME\"\n\nVERSION=$(defaults read \"$BUILT_PRODUCTS_DIR/$PROJECT_NAME/Contents/Info\" CFBundleVersion)\nDOWNLOAD_BASE_URL=\"http://www.methylblue.com/playdar\"\n\nARCHIVE_FILENAME=\"$PROJECT_NAME-$VERSION.zip\"\nDOWNLOAD_URL=\"$DOWNLOAD_BASE_URL/$ARCHIVE_FILENAME\"\nKEYCHAIN_PRIVKEY_NAME=\"Sparkle Private Key\"\n\nWD=$PWD\ncd \"$BUILT_PRODUCTS_DIR\"\nrm -f \"$PROJECT_NAME\"*.zip\nditto -ck --keepParent \"$PROJECT_NAME\" \"$ARCHIVE_FILENAME\"\n\nSIZE=$(stat -f %z \"$ARCHIVE_FILENAME\")\nPUBDATE=$(date +\"%a, %d %b %G %T %z\")\nSIGNATURE=$(\n\topenssl dgst -sha1 -binary < \"$ARCHIVE_FILENAME\" \\\n\t| openssl dgst -dss1 -sign <(security find-generic-password -g -s \"$KEYCHAIN_PRIVKEY_NAME\" 2>&1 1>/dev/null | perl -pe '($_) = /\"(.+)\"/; s/\\\\012/\\n/g') \\\n\t| openssl enc -base64\n)\n\n[ $SIGNATURE ] || { echo Unable to load signing private key with name \"'$KEYCHAIN_PRIVKEY_NAME'\" from keychain; false; }\n\ncat <<EOF > appcast.xml\n<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rss version=\"2.0\" xmlns:sparkle=\"http://www.andymatuschak.org/xml-namespaces/sparkle\"\txmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n\t<channel>\n\t\t<title>Playdar.prefPane Changelog</title>\n\t\t<link>http://www.methylblue.com/playdar/appcast.xml</link>\n\t\t<description>Most recent changes with links to updates.</description>\n\t\t<language>en</language>\n\t\t<item>\n\t\t\t<title>Version $VERSION</title>\n\t\t\t<pubDate>$PUBDATE</pubDate>\n\t\t\t<description>\n\t\t\t\t<![CDATA[<a style='float:left;margin-right:1em' href='http://www.flickr.com/photos/30941515@N07/3352597643/'><img src='http://farm2.static.flickr.com/1401/3352597643_a0f283a90b_m.jpg'></a><h2></h2>]]>\n\t\t\t</description>\n\t\t\t<enclosure\n\t\t\t\turl=\"$DOWNLOAD_URL\"\n\t\t\t\tsparkle:version=\"$VERSION\"\n\t\t\t\ttype=\"application/octet-stream\"\n\t\t\t\tlength=\"$SIZE\"\n\t\t\t\tsparkle:dsaSignature=\"$SIGNATURE\"\n\t\t\t/>\n\t\t</item>\n\t</channel>\n</rss>\nEOF\n\necho scp \"'$PWD/$ARCHIVE_FILENAME'\" \"'$PWD/appcast.xml'\" methylblue.com:public_html/playdar\n";
 			showEnvVarsInLog = 0;
 		};
 		638829FA0F6F1A6F0081F3E4 /* make playdar */ = {
@@ -271,7 +271,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "set -o errexit\n\ncd \"$SRCROOT/playdar/build\"\ntest -f CMakeCache.txt || cmake ..\nmake -j2\n\ncd \"$SRCROOT\"\nmake -f Playdar.prefPane.xcodeproj/Makefile\nmv $BUILT_PRODUCTS_DIR/$EXECUTABLE_FOLDER_PATH/playdard $BUILT_PRODUCTS_DIR/$EXECUTABLE_FOLDER_PATH/playdar";
+			shellScript = "set -o errexit\n\ncd \"$SRCROOT/playdar/build\"\ngit checkout prefpane\ntest -f CMakeCache.txt || cmake ..\nmake -j2\n\ncd \"$SRCROOT\"\nmake -f Playdar.prefPane.xcodeproj/Makefile";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -320,7 +320,7 @@
 					"$(inherited)",
 					/usr/local/lib,
 				);
-				PRODUCT_NAME = Playdar;
+				PRODUCT_NAME = PlaydarPrefPanePlugin;
 				WRAPPER_EXTENSION = prefPane;
 				ZERO_LINK = YES;
 			};
@@ -343,7 +343,7 @@
 					"$(inherited)",
 					/usr/local/lib,
 				);
-				PRODUCT_NAME = Playdar;
+				PRODUCT_NAME = PlaydarPrefPanePlugin;
 				WRAPPER_EXTENSION = prefPane;
 			};
 			name = Release;
