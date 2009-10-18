@@ -30,18 +30,16 @@
     IBOutlet NSTextField* info;
     IBOutlet NSWindow* advanced_window;
     IBOutlet NSProgressIndicator* spinner;
+    IBOutlet NSProgressIndicator* scan_spinner;
     
     NSTask* daemon_task;
-    NSTimer* timer;
+    NSTask* scanner_task;
+    NSTimer* poll_timer;
     pid_t pid;
 }
 
 -(void)mainViewDidLoad;
 -(void)addFolder:(NSString*)path setSelected:(bool)select;
-
--(NSTask*)execScript:(NSString*)command withArgs:(NSArray*)args;
--(NSString*)bin;
--(void)writeDaemonScript;
 
 -(bool)isLoginItem;
 -(void)setLoginItem:(bool)enabled;

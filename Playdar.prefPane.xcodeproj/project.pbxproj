@@ -6,57 +6,26 @@
 	objectVersion = 45;
 	objects = {
 
-/* Begin PBXAggregateTarget section */
-		6378C80B1006A04300E4AA4E /* Distribution */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 6378C8101006A04900E4AA4E /* Build configuration list for PBXAggregateTarget "Distribution" */;
-			buildPhases = (
-				6378C8131006A1BD00E4AA4E /* ShellScript */,
-			);
-			dependencies = (
-			);
-			name = Distribution;
-			productName = dist;
-		};
-/* End PBXAggregateTarget section */
-
 /* Begin PBXBuildFile section */
-		63773AB70F59674B002D0DE9 /* playdar.icns in Resources */ = {isa = PBXBuildFile; fileRef = 63773AB60F59674B002D0DE9 /* playdar.icns */; };
-		6381AA800F5AC101003D1B3F /* playdar.conf.rb in Resources */ = {isa = PBXBuildFile; fileRef = 6381AA7F0F5AC101003D1B3F /* playdar.conf.rb */; };
-		6381AAAA0F5AC549003D1B3F /* schema.sql in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6381AAA80F5AC541003D1B3F /* schema.sql */; };
-		639E37630F6D2D2900B274E1 /* methylblue.pem in Resources */ = {isa = PBXBuildFile; fileRef = 639E37620F6D2D2900B274E1 /* methylblue.pem */; };
-		639E376D0F6F17CA00B274E1 /* playdar.conf in CopyFiles */ = {isa = PBXBuildFile; fileRef = 639E376A0F6F17AD00B274E1 /* playdar.conf */; };
-		63DFABE70F5CAAA1001855D4 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63DFABE60F5CAAA1001855D4 /* Sparkle.framework */; };
-		63DFABEE0F5CAAFA001855D4 /* Sparkle.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 63DFABE60F5CAAA1001855D4 /* Sparkle.framework */; };
-		63E2F3BF0F60A11B00738CA2 /* LoginItemsAE.c in Sources */ = {isa = PBXBuildFile; fileRef = 635AD4D20F5E1552003C0805 /* LoginItemsAE.c */; };
-		63E2F5340F60D5F200738CA2 /* scanner.sh in Resources */ = {isa = PBXBuildFile; fileRef = 63E2F5330F60D5F200738CA2 /* scanner.sh */; };
-		8D202CEF0486D31800D8A456 /* main.xib in Resources */ = {isa = PBXBuildFile; fileRef = F506C042013D9D8C01CA16C8 /* main.xib */; };
+		63ADA832108B6447004FFC0C /* main.xib in Resources */ = {isa = PBXBuildFile; fileRef = 63A9EFAE108B605C0055B9DA /* main.xib */; };
+		63ADA849108B69AE004FFC0C /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63ADA848108B69AE004FFC0C /* Sparkle.framework */; };
+		63ADA855108B6AB7004FFC0C /* Sparkle.framework in Copy Sparkle.framework */ = {isa = PBXBuildFile; fileRef = 63ADA848108B69AE004FFC0C /* Sparkle.framework */; };
+		8D202CEE0486D31800D8A456 /* playdar.icns in Resources */ = {isa = PBXBuildFile; fileRef = F506C040013D9D8001CA16C8 /* playdar.icns */; };
 		8D202CF10486D31800D8A456 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F506C03D013D9D7901CA16C8 /* main.m */; };
 		8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F506C035013D953901CA16C8 /* PreferencePanes.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		6381AA960F5AC1D8003D1B3F /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 7;
-			files = (
-				639E376D0F6F17CA00B274E1 /* playdar.conf in CopyFiles */,
-				6381AAAA0F5AC549003D1B3F /* schema.sql in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		63DFABED0F5CAAF6001855D4 /* Copy Frameworks */ = {
+		63ADA826108B6344004FFC0C /* Copy Sparkle.framework */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				63DFABEE0F5CAAFA001855D4 /* Sparkle.framework in Copy Frameworks */,
+				63ADA855108B6AB7004FFC0C /* Sparkle.framework in Copy Sparkle.framework */,
 			);
-			name = "Copy Frameworks";
+			name = "Copy Sparkle.framework";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -66,21 +35,14 @@
 		089C167FFE841241C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		32DBCFA20370C41700C91783 /* pc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pc.h; sourceTree = "<group>"; };
-		635AD4D00F5E152D003C0805 /* LoginItemsAE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginItemsAE.h; sourceTree = "<group>"; };
-		635AD4D20F5E1552003C0805 /* LoginItemsAE.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = LoginItemsAE.c; sourceTree = "<group>"; };
-		63773AB60F59674B002D0DE9 /* playdar.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = playdar.icns; sourceTree = "<group>"; };
-		6381AA7F0F5AC101003D1B3F /* playdar.conf.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = playdar.conf.rb; sourceTree = "<group>"; };
-		6381AAA80F5AC541003D1B3F /* schema.sql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = schema.sql; path = playdar/etc/schema.sql; sourceTree = SOURCE_ROOT; };
-		639E37620F6D2D2900B274E1 /* methylblue.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = methylblue.pem; sourceTree = "<group>"; };
-		639E376A0F6F17AD00B274E1 /* playdar.conf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = playdar.conf; path = playdar/etc/playdar.conf; sourceTree = SOURCE_ROOT; };
-		63DFABE60F5CAAA1001855D4 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
-		63E2F5330F60D5F200738CA2 /* scanner.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = scanner.sh; sourceTree = "<group>"; };
+		63A9EFAE108B605C0055B9DA /* main.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = main.xib; sourceTree = SOURCE_ROOT; };
+		63ADA848108B69AE004FFC0C /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D202CF80486D31800D8A456 /* Playdar.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Playdar.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 		F506C03C013D9D7901CA16C8 /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
 		F506C03D013D9D7901CA16C8 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		F506C043013D9D8C01CA16C8 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/main.xib; sourceTree = "<group>"; };
+		F506C040013D9D8001CA16C8 /* playdar.icns */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = playdar.icns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,14 +52,14 @@
 			files = (
 				8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */,
 				8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */,
-				63DFABE70F5CAAA1001855D4 /* Sparkle.framework in Frameworks */,
+				63ADA849108B69AE004FFC0C /* Sparkle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		089C166AFE841209C02AAC07 /* Playdar */ = {
+		089C166AFE841209C02AAC07 /* Playdar.prefPane */ = {
 			isa = PBXGroup;
 			children = (
 				08FB77AFFE84173DC02AAC07 /* Classes */,
@@ -105,9 +67,8 @@
 				089C167CFE841241C02AAC07 /* Resources */,
 				089C1671FE841209C02AAC07 /* Frameworks and Libraries */,
 				19C28FB8FE9D52D311CA2CBB /* Products */,
-				6381AAB60F5AC5F9003D1B3F /* External Files */,
 			);
-			name = Playdar;
+			name = Playdar.prefPane;
 			sourceTree = "<group>";
 		};
 		089C1671FE841209C02AAC07 /* Frameworks and Libraries */ = {
@@ -122,12 +83,9 @@
 		089C167CFE841241C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				639E37620F6D2D2900B274E1 /* methylblue.pem */,
-				63773AB60F59674B002D0DE9 /* playdar.icns */,
+				63A9EFAE108B605C0055B9DA /* main.xib */,
 				8D202CF70486D31800D8A456 /* Info.plist */,
-				F506C042013D9D8C01CA16C8 /* main.xib */,
-				63E2F5330F60D5F200738CA2 /* scanner.sh */,
-				6381AA7F0F5AC101003D1B3F /* playdar.conf.rb */,
+				F506C040013D9D8001CA16C8 /* playdar.icns */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -144,7 +102,7 @@
 		1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				63DFABE60F5CAAA1001855D4 /* Sparkle.framework */,
+				63ADA848108B69AE004FFC0C /* Sparkle.framework */,
 				1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */,
 				F506C035013D953901CA16C8 /* PreferencePanes.framework */,
 			);
@@ -172,42 +130,31 @@
 			isa = PBXGroup;
 			children = (
 				32DBCFA20370C41700C91783 /* pc.h */,
-				635AD4D00F5E152D003C0805 /* LoginItemsAE.h */,
-				635AD4D20F5E1552003C0805 /* LoginItemsAE.c */,
 			);
 			name = "Other Sources";
-			sourceTree = "<group>";
-		};
-		6381AAB60F5AC5F9003D1B3F /* External Files */ = {
-			isa = PBXGroup;
-			children = (
-				639E376A0F6F17AD00B274E1 /* playdar.conf */,
-				6381AAA80F5AC541003D1B3F /* schema.sql */,
-			);
-			name = "External Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8D202CE80486D31800D8A456 /* Build */ = {
+		8D202CE80486D31800D8A456 /* Playdar.prefPane */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1DBD214808BA80EA00186707 /* Build configuration list for PBXNativeTarget "Build" */;
+			buildConfigurationList = 1DBD214808BA80EA00186707 /* Build configuration list for PBXNativeTarget "Playdar.prefPane" */;
 			buildPhases = (
+				8D202CEC0486D31800D8A456 /* Resources */,
+				63ADA826108B6344004FFC0C /* Copy Sparkle.framework */,
+				63ADA82C108B637B004FFC0C /* Copy Playdar Directory */,
 				8D202CF00486D31800D8A456 /* Sources */,
 				8D202CF20486D31800D8A456 /* Frameworks */,
-				8D202CEC0486D31800D8A456 /* Resources */,
-				63DFABED0F5CAAF6001855D4 /* Copy Frameworks */,
-				6381AA960F5AC1D8003D1B3F /* CopyFiles */,
-				638829FA0F6F1A6F0081F3E4 /* make playdar */,
+				8D202CF50486D31800D8A456 /* Rez */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = Build;
+			name = Playdar.prefPane;
 			productInstallPath = "$(HOME)/Library/PreferencePanes";
-			productName = moose;
+			productName = Playdar.prefPane;
 			productReference = 8D202CF80486D31800D8A456 /* Playdar.prefPane */;
 			productType = "com.apple.product-type.bundle";
 		};
@@ -219,12 +166,11 @@
 			buildConfigurationList = 1DBD214C08BA80EA00186707 /* Build configuration list for PBXProject "Playdar.prefPane" */;
 			compatibilityVersion = "Xcode 3.1";
 			hasScannedForEncodings = 1;
-			mainGroup = 089C166AFE841209C02AAC07 /* Playdar */;
+			mainGroup = 089C166AFE841209C02AAC07 /* Playdar.prefPane */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8D202CE80486D31800D8A456 /* Build */,
-				6378C80B1006A04300E4AA4E /* Distribution */,
+				8D202CE80486D31800D8A456 /* Playdar.prefPane */,
 			);
 		};
 /* End PBXProject section */
@@ -234,45 +180,39 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8D202CEF0486D31800D8A456 /* main.xib in Resources */,
-				63773AB70F59674B002D0DE9 /* playdar.icns in Resources */,
-				6381AA800F5AC101003D1B3F /* playdar.conf.rb in Resources */,
-				63E2F5340F60D5F200738CA2 /* scanner.sh in Resources */,
-				639E37630F6D2D2900B274E1 /* methylblue.pem in Resources */,
+				8D202CEE0486D31800D8A456 /* playdar.icns in Resources */,
+				63ADA832108B6447004FFC0C /* main.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		6378C8131006A1BD00E4AA4E /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
+/* Begin PBXRezBuildPhase section */
+		8D202CF50486D31800D8A456 /* Rez */ = {
+			isa = PBXRezBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/bash;
-			shellScript = "set -o errexit\n\n# OSX copies special file attributes to ._files when you tar!\nexport COPY_EXTENDED_ATTRIBUTES_DISABLE=true\nexport COPYFILE_DISABLE=true\n\n[ $BUILD_STYLE = Release ] || { echo Distribution target requires \"'Release'\" build style; false; }\n\nVERSION=$(defaults read \"$BUILT_PRODUCTS_DIR/$PROJECT_NAME/Contents/Info\" CFBundleVersion)\nDOWNLOAD_BASE_URL=\"http://www.methylblue.com/playdar\"\n\nARCHIVE_FILENAME=\"$PROJECT_NAME-$VERSION.tar.bz2\"\nDOWNLOAD_URL=\"$DOWNLOAD_BASE_URL/$ARCHIVE_FILENAME\"\nKEYCHAIN_PRIVKEY_NAME=\"Sparkle Private Key\"\n\nWD=$PWD\ncd \"$BUILT_PRODUCTS_DIR\"\nrm -f \"$PROJECT_NAME\"*.tbz\ntar cjf \"$ARCHIVE_FILENAME\" \"$PROJECT_NAME\"\n\nSIZE=$(stat -f %z \"$ARCHIVE_FILENAME\")\nPUBDATE=$(date +\"%a, %d %b %G %T %z\")\nSIGNATURE=$(\n\topenssl dgst -sha1 -binary < \"$ARCHIVE_FILENAME\" \\\n\t| openssl dgst -dss1 -sign <(security find-generic-password -g -s \"$KEYCHAIN_PRIVKEY_NAME\" 2>&1 1>/dev/null | perl -pe '($_) = /\"(.+)\"/; s/\\\\012/\\n/g') \\\n\t| openssl enc -base64\n)\n\n[ $SIGNATURE ] || { echo Unable to load signing private key with name \"'$KEYCHAIN_PRIVKEY_NAME'\" from keychain; false; }\n\ncat <<EOF > appcast.xml\n<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rss version=\"2.0\" xmlns:sparkle=\"http://www.andymatuschak.org/xml-namespaces/sparkle\"\txmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n\t<channel>\n\t\t<title>Playdar.prefPane Changelog</title>\n\t\t<link>http://www.methylblue.com/playdar/appcast.xml</link>\n\t\t<description>Most recent changes with links to updates.</description>\n\t\t<language>en</language>\n\t\t<item>\n\t\t\t<title>Version $VERSION</title>\n\t\t\t<pubDate>$PUBDATE</pubDate>\n\t\t\t<description>\n\t\t\t\t<![CDATA[<a style='float:left;margin-right:1em' href='http://www.flickr.com/photos/30941515@N07/3352597643/'><img src='http://farm2.static.flickr.com/1401/3352597643_a0f283a90b_m.jpg'></a><h2></h2>]]>\n\t\t\t</description>\n\t\t\t<enclosure\n\t\t\t\turl=\"$DOWNLOAD_URL\"\n\t\t\t\tsparkle:version=\"$VERSION\"\n\t\t\t\ttype=\"application/octet-stream\"\n\t\t\t\tlength=\"$SIZE\"\n\t\t\t\tsparkle:dsaSignature=\"$SIGNATURE\"\n\t\t\t/>\n\t\t</item>\n\t</channel>\n</rss>\nEOF\n\necho scp \"'$PWD/$ARCHIVE_FILENAME'\" \"'$PWD/appcast.xml'\" methylblue.com:public_html/playdar\n";
-			showEnvVarsInLog = 0;
 		};
-		638829FA0F6F1A6F0081F3E4 /* make playdar */ = {
+/* End PBXRezBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		63ADA82C108B637B004FFC0C /* Copy Playdar Directory */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
+				"$(SRCROOT)/playdar",
 			);
-			name = "make playdar";
+			name = "Copy Playdar Directory";
 			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/playdar",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/bash;
-			shellScript = "set -o errexit\n\ncd \"$SRCROOT/playdar/build\"\ngit checkout prefpane\ntest -f CMakeCache.txt || cmake ..\nmake -j2\n\ncd \"$SRCROOT\"\nmake -f Playdar.prefPane.xcodeproj/Makefile";
-			showEnvVarsInLog = 0;
+			shellPath = /bin/sh;
+			shellScript = "cp -fR \"$SRCROOT/playdar\" \"$BUILT_PRODUCTS_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/playdar\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -282,22 +222,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D202CF10486D31800D8A456 /* main.m in Sources */,
-				63E2F3BF0F60A11B00738CA2 /* LoginItemsAE.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		F506C042013D9D8C01CA16C8 /* main.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				F506C043013D9D8C01CA16C8 /* English */,
-			);
-			name = main.xib;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		1DBD214908BA80EA00186707 /* Debug */ = {
@@ -316,10 +244,6 @@
 				GCC_PREFIX_HEADER = pc.h;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/PreferencePanes";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/usr/local/lib,
-				);
 				PRODUCT_NAME = Playdar;
 				WRAPPER_EXTENSION = prefPane;
 				ZERO_LINK = YES;
@@ -339,10 +263,6 @@
 				GCC_PREFIX_HEADER = pc.h;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/PreferencePanes";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/usr/local/lib,
-				);
 				PRODUCT_NAME = Playdar;
 				WRAPPER_EXTENSION = prefPane;
 			};
@@ -351,55 +271,40 @@
 		1DBD214D08BA80EA00186707 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				GCC_C_LANGUAGE_STANDARD = c99;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_GC = required;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
-				PRODUCT_NAME = "";
-				SDKROOT = macosx10.5;
+				SDKROOT = macosx10.6;
+				VALID_ARCHS = "i386 ppc x86_64";
 			};
 			name = Debug;
 		};
 		1DBD214E08BA80EA00186707 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				GCC_C_LANGUAGE_STANDARD = c99;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_GC = required;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				LLVM_LTO = YES;
 				PREBINDING = NO;
-				PRODUCT_NAME = "";
 				SDKROOT = macosx10.5;
-			};
-			name = Release;
-		};
-		6378C80D1006A04300E4AA4E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = dist;
-			};
-			name = Debug;
-		};
-		6378C80E1006A04300E4AA4E /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				PRODUCT_NAME = dist;
-				ZERO_LINK = NO;
+				VALID_ARCHS = "i386 ppc x86_64";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1DBD214808BA80EA00186707 /* Build configuration list for PBXNativeTarget "Build" */ = {
+		1DBD214808BA80EA00186707 /* Build configuration list for PBXNativeTarget "Playdar.prefPane" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DBD214908BA80EA00186707 /* Debug */,
@@ -413,15 +318,6 @@
 			buildConfigurations = (
 				1DBD214D08BA80EA00186707 /* Debug */,
 				1DBD214E08BA80EA00186707 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		6378C8101006A04900E4AA4E /* Build configuration list for PBXAggregateTarget "Distribution" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				6378C80D1006A04300E4AA4E /* Debug */,
-				6378C80E1006A04300E4AA4E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

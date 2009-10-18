@@ -29,7 +29,6 @@
 //TODO pipe output to a log file
 
 #import "main.h"
-#include "LoginItemsAE.h"
 #include <Sparkle/SUUpdater.h>
 #include <sys/sysctl.h>
 
@@ -51,26 +50,11 @@ static pid_t playdar_pid()
 
     N = N / sizeof(struct kinfo_proc);
     for(size_t i = 0; i < N; i++)
-        if(strcmp(info[i].kp_proc.p_comm, "playdar") == 0)
+        if(strcmp(info[i].kp_proc.p_comm, "playdar.smp") == 0)
             { pid = info[i].kp_proc.p_pid; break; }
 end:
     NSZoneFree(NULL, info);
     return pid;
-}
-
-static inline NSString* ini_path()
-{
-    return [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Preferences/org.playdar.json"];
-}
-
-static inline NSString* db_path()
-{
-    return [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Application Support/Playdar/collection.db"];
-}
-
-static inline NSString* daemon_script_path()
-{
-    return [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Application Support/Playdar/playdar.command"];
 }
 
 static inline NSString* fullname()
@@ -115,25 +99,33 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     CFFileDescriptorEnableCallBacks(ref, kCFFileDescriptorReadCallBack);
 }
 
-#define START_POLL timer = [NSTimer scheduledTimerWithTimeInterval:0.4 target:self selector:@selector(poll:) userInfo:nil repeats:true];
+#define START_POLL poll_timer = [NSTimer scheduledTimerWithTimeInterval:0.4 target:self selector:@selector(poll:) userInfo:nil repeats:true];
 
 
 @implementation OrgPlaydarPreferencePane
 
+-(NSString*)playdarDir
+{
+    return [[[self bundle] resourcePath] stringByAppendingPathComponent:@"playdar"];
+}
+
+-(NSString*)startScriptPath
+{
+    return [[self playdarDir] stringByAppendingPathComponent:@"start.sh"];
+}
+
+-(NSString*)playdarctl
+{
+    return [[self playdarDir] stringByAppendingPathComponent:@"playdarctl"];
+}
+
+-(NSString*)playdarConf
+{
+    return [[self playdarDir] stringByAppendingPathComponent:@"etc/playdar.conf"];
+}
+
 -(void)mainViewDidLoad
 {   
-    NSFileManager* fm = [NSFileManager defaultManager];
-    NSString* scriptpath = daemon_script_path();
-    if([fm fileExistsAtPath:scriptpath] == false){
-        [fm createDirectoryAtPath:[scriptpath stringByDeletingLastPathComponent] attributes:nil];
-        [self writeDaemonScript];
-    }
-    NSString* ini = ini_path();
-    if([fm fileExistsAtPath:ini] == false){
-        NSArray* args = [NSArray arrayWithObjects: fullname(), db_path(), ini, nil];
-        [self execScript:@"playdar.conf.rb" withArgs:args];
-    }
-
     [[popup menu] addItem:[NSMenuItem separatorItem]];
     [[[popup menu] addItemWithTitle:@"Other…" action:@selector(onSelect:) keyEquivalent:@""] setTarget:self];
 
@@ -174,11 +166,31 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     [item setImage:image];
     if(select) [popup selectItemAtIndex:index];
 }
- 
+
 -(void)onScan:(id)sender
 {
-    NSArray* args = [NSArray arrayWithObjects:[popup titleOfSelectedItem], db_path(), nil];
-    [self execScript:@"scanner.sh" withArgs:args];
+    @try {
+        scanner_task = [[NSTask alloc] init];
+        [scanner_task setLaunchPath:[self playdarctl]];
+        [scanner_task setArguments:[NSArray arrayWithObjects:@"scan", [popup titleOfSelectedItem], nil]];
+        [scanner_task launch];
+
+        [scan_spinner startAnimation:self];
+
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(scanComplete:)
+                                                     name:NSTaskDidTerminateNotification
+                                                   object:scanner_task];
+    }
+    @catch (NSException* e)
+    {
+        NSRunCriticalAlertPanel(@"Could not start scan", [e reason], nil, nil, nil);
+    }
+}
+
+-(void)scanComplete:(NSNotification*)note
+{
+    [scan_spinner stopAnimation:self];
 }
 
 -(void)representHiddenParts
@@ -201,105 +213,131 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
         [self setLoginItem:!is_dead];
 }
 
--(void)poll:(NSTimer*)_timer
+-(void)poll:(NSTimer*)_poll_timer
 {
-    if(pid=playdar_pid()){
-        [timer invalidate];
-        timer=nil;
+    if(pid = playdar_pid()){
+        [poll_timer invalidate];
+        poll_timer = nil;
         kqueue_watch_pid(pid, self);
         [enable setState:NSOnState];
         [self representHiddenParts];
     }
 }
+         
+-(void)stop
+{
+    NSTask* task = [[NSTask alloc] init];
+    task.launchPath = [self playdarctl];
+    task.arguments = [NSArray arrayWithObjects:@"stop", nil];
+
+    [spinner startAnimation:self];
+    [task launch];
+    [task waitUntilExit];
+    
+    if (task.terminationStatus == 0) {
+        daemon_task = nil;
+        [spinner stopAnimation:self];
+        return;
+    }
+
+    if(daemon_task)
+        [daemon_task terminate];
+    else if(pid == 0)
+        ; // state machine error!
+    else if(kill(pid, SIGKILL) == -1 && errno != ESRCH){
+        [enable setState:NSOnState];
+        NSRunCriticalAlertPanel(@"Could not kill daemon",
+                                @"Perhaps you don't have the right permissions?", nil, nil, nil);
+    }else{
+        // the kqueue event will tell us when the process exits
+    }    
+}
+ 
+-(void)startInTerminal
+{
+    daemon_task = [[NSTask alloc] init];
+    [daemon_task setLaunchPath:@"/usr/bin/open"];
+    [daemon_task setArguments:[NSArray arrayWithObjects:[self startScriptPath], @"-aTerminal", nil]];
+    [daemon_task launch];
+
+    pid = -100; //HACK
+    [self representHiddenParts];
+    [daemon_task waitUntilExit];
+    pid = playdar_pid();
+    daemon_task = nil;
+
+    if(pid)
+        kqueue_watch_pid(pid, self);
+    else {
+        [enable setState:NSOffState];
+        [self representHiddenParts];
+    }    
+}
+
+-(void)start
+{
+    daemon_task = [[NSTask alloc] init];
+    [daemon_task setLaunchPath:[self startScriptPath]];
+    [daemon_task setArguments:[NSArray arrayWithObject:@"-d"]];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(daemonTerminated:)
+                                                 name:NSTaskDidTerminateNotification
+                                               object:daemon_task];
+    [daemon_task launch];
+    pid = [daemon_task processIdentifier];    
+}
 
 -(void)onEnable:(id)sender
 {       
-    if([enable state] == NSOffState){
-        if(daemon_task){
-            [spinner performSelector:@selector(startAnimation:) withObject:self afterDelay:0.3];
-            [daemon_task terminate];
+    if ([enable state] == NSOffState) {
+        [self stop];
+        return;
+    }
+
+    [poll_timer invalidate];
+    poll_timer=nil;
+    
+    pid = playdar_pid();
+    
+    if(!pid){
+        @try{
+            if(NSAlternateKeyMask & [[NSApp currentEvent] modifierFlags])
+                [self startInTerminal];
+            else
+                [self start];
         }
-        else if(pid == 0)
-            ; // state machine error!
-        else if(kill(pid, SIGKILL) == -1 && errno != ESRCH){
-            [enable setState:NSOnState];
-            NSRunCriticalAlertPanel(@"Could not kill daemon",
-                                    @"Perhaps you don't have the right permissions?", nil, nil, nil);
-        }else{
-            // the kqueue event will tell us when the process exits
-            [spinner performSelector:@selector(startAnimation:) withObject:self afterDelay:0.3];
+        @catch(NSException* e)
+        {
+            NSString* msg = @"The file at “";
+            msg = [msg stringByAppendingString:[daemon_task launchPath]];
+            msg = [msg stringByAppendingString:@"” could not be executed."];
+            
+            NSBeginAlertSheet(@"Could not start Playdar",
+                              nil, nil, nil,
+                              [[self mainView] window],
+                              self,
+                              nil, nil,
+                              nil,
+                              msg );
+            daemon_task = nil;
         }
     }else{
-        [timer invalidate];
-        timer=nil;
-        
-        pid = playdar_pid(); // for some reason assignment doesn't happen inside if statements..
-        if(!pid){
-            daemon_task=[[NSTask alloc] init];
-            @try{
-                if([[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask){
-                    [daemon_task setLaunchPath:@"/usr/bin/open"];
-                    [daemon_task setArguments:[NSArray arrayWithObjects:daemon_script_path(), nil]];
-                    [daemon_task launch];
-                    pid = -100; //HACK
-                    [self representHiddenParts]; //adds some delay which is required to get at pid
-                    pid = playdar_pid();
-                    [daemon_task waitUntilExit];
-                    [daemon_task release];
-                    daemon_task=nil;
-
-                    if(pid)
-                        kqueue_watch_pid(pid, self);
-                    else {
-                        [enable setState:NSOffState];
-                        [self representHiddenParts];
-                    }
-                    return;
-                }else{
-                    [daemon_task setLaunchPath:daemon_script_path()];
-                    
-                    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                                             selector:@selector(daemonTerminated:) 
-                                                                 name:NSTaskDidTerminateNotification 
-                                                               object:daemon_task];
-                    
-                    [daemon_task launch];
-                    pid = [daemon_task processIdentifier];
-                }
-            }
-            @catch(NSException* e)
-            {
-                NSString* msg = @"The file at “";
-                msg = [msg stringByAppendingString:[daemon_task launchPath]];
-                msg = [msg stringByAppendingString:@"” could not be executed."];
-                
-                NSBeginAlertSheet(@"Could not start Playdar",
-                                  nil, nil, nil,
-                                  [[self mainView] window],
-                                  self,
-                                  nil, nil,
-                                  nil,
-                                  msg );
-            }
-            @finally {
-                [daemon_task release];
-            }
-        }else{
-            // unexpectedly there is already a playdar instance running!
-            kqueue_watch_pid(pid, self);
-        }
-        [self representHiddenParts];
+        // unexpectedly there is already a playdar instance running!
+        kqueue_watch_pid(pid, self);
     }
+    [self representHiddenParts];
 }
 
 -(void)daemonTerminated:(NSNotification*)note
-{   
+{  
     [[NSNotificationCenter defaultCenter] removeObserver:self 
                                                     name:NSTaskDidTerminateNotification 
                                                   object:daemon_task];
+   
     daemon_task = nil;
     pid = 0;
-    
+        
     [NSObject cancelPreviousPerformRequestsWithTarget:spinner];
     [spinner stopAnimation:self];
     [enable setState:NSOffState];
@@ -310,8 +348,9 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
 
 -(void)setLoginItem:(bool)enabled
 {
+#if 0
 	CFArrayRef loginItems = NULL;
-	NSURL *url = [NSURL fileURLWithPath:daemon_script_path()];
+	NSURL *url = [NSURL fileURLWithPath:[self startScriptPath]];
 	int existingLoginItemIndex = -1;
 	OSStatus err = LIAECopyLoginItems(&loginItems);
 	if(err == noErr) {
@@ -333,13 +372,15 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     
 	if(loginItems)
 		CFRelease(loginItems);
+#endif
 }
 
 -(bool)isLoginItem
 {
+#if 0
     Boolean foundIt = false;
     CFArrayRef loginItems = NULL;
-    CFURLRef url = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)daemon_script_path(), kCFURLPOSIXPathStyle, false);
+    CFURLRef url = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)[self startScriptPath], kCFURLPOSIXPathStyle, false);
     OSStatus err = LIAECopyLoginItems(&loginItems);
     if(err == noErr) {
         for(CFIndex i=0, N=CFArrayGetCount(loginItems); i<N; ++i) {
@@ -351,6 +392,9 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     }
     CFRelease(url);  
     return foundIt;
+#else
+    return true;
+#endif
 }
 
 ////// Directory selector
@@ -381,27 +425,6 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
 }
 ////// Directory selector
 
--(NSTask*)execScript:(NSString*)script_name withArgs:(NSArray*)args
-{
-    NSTask* task = 0;
-    @try {
-        NSString* resources = [[self bundle] resourcePath];
-        NSString* path = [resources stringByAppendingPathComponent:script_name];
-        
-        task = [[NSTask alloc] init];
-        [task setCurrentDirectoryPath:resources];
-        [task setLaunchPath:path];
-        [task setArguments:args];
-        [task launch];
-    }
-    @catch (NSException* e)
-    {
-        NSRunCriticalAlertPanel(@"Could not run script", 
-                                [e reason], nil, nil, nil);
-    }
-    return task;
-}
-
 -(IBAction)onHelp:(id)sender
 {
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://methylblue.com/playdar/faq.php"]];
@@ -418,6 +441,7 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
 
 -(IBAction)onCloseAdvanced:(id)sender
 {
+#if 0
     if([[NSUserDefaults standardUserDefaults] boolForKey:MBHomemade]){
         NSString* path = [self bin]; //use path that script eventually uses
         if([[NSFileManager defaultManager] isExecutableFileAtPath:path] == false){
@@ -425,51 +449,16 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
             return;
         }
     }
-    
+#endif
+
     [advanced_window orderOut:nil];
     [NSApp endSheet:advanced_window];
-    
-    [self writeDaemonScript];
 }
 
 -(IBAction)onEditConfigFile:(id)sender;
 {
-    bool b = [[NSWorkspace sharedWorkspace] openFile:ini_path() withApplication:@"TextMate"];
-    if (!b) [[NSWorkspace sharedWorkspace] openFile:ini_path() withApplication:@"TextEdit"];
-}
-
--(NSString*)bin
-{
-    return [[NSUserDefaults standardUserDefaults] boolForKey:MBHomemade]
-         ? [[[NSUserDefaults standardUserDefaults] stringForKey:MBHomemadePath] stringByStandardizingPath]
-         : [[[self bundle] bundlePath] stringByAppendingPathComponent:@"Contents/Daemon/playdar"];
-}
-
--(void)writeDaemonScript
-{
-    NSString* path = daemon_script_path();
-    NSString* cd = [[NSUserDefaults standardUserDefaults] boolForKey:MBHomemade]
-            ? @"cd `dirname $playdar`/..\n"
-            : @"cd `dirname $playdar`\n";
-    
-    NSMutableString* command = [NSMutableString stringWithString:@"#!/bin/bash\n"];
-    [command appendFormat:@"playdar='%@'\n", [self bin]];
-    [command appendString:cd];
-    [command appendFormat:@"exec $playdar -c '%@'\n", ini_path()];
-    NSError* error;
-    bool ok = [command writeToFile:path
-                        atomically:true
-                          encoding:NSUTF8StringEncoding
-                             error:&error];
-    
-    if(ok){
-        NSDictionary* dict = [NSDictionary dictionaryWithObject:[NSNumber numberWithUnsignedInt:0755U]
-                                                         forKey:NSFilePosixPermissions];
-        [[NSFileManager defaultManager] changeFileAttributes:dict
-                                                      atPath:path];
-    }
-    else
-        [[NSAlert alertWithError:error] runModal];
+    #define OPEN(x) [[NSWorkspace sharedWorkspace] openFile:[self playdarConf] withApplication:x]
+    if (!OPEN(@"TextMate")) OPEN(@"TextEdit");
 }
 
 -(IBAction)onDemos:(id)sender
@@ -477,10 +466,9 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://playdar.org/demos/"]];
 }
 
-
 -(IBAction)onViewStatus:(id)sender
 {
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://localhost:8888"]];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://localhost:60210"]];
 }
 
 @end

@@ -1,9 +1,8 @@
-// Precompiled Header
+//
+// Prefix header for all source files of the 'Playdar.prefPane' target in the 'Playdar.prefPane' project.
+//
 
 #ifdef __OBJC__
     #import <Foundation/Foundation.h>
     #import <AppKit/AppKit.h>
 #endif
-
-#define MBHomemade @"org.playdar.Homemade"
-#define MBHomemadePath @"org.playdar.HomemadePath"

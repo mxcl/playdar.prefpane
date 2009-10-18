@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string>Playdar</string>
+	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFile</key>
 	<string>playdar.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -13,22 +13,26 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Playdar</string>
+	<string>${PRODUCT_NAME}</string>
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
-	<key>CFBundleVersion</key>
-	<string>0.1.8</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>0.1.9</string>
 	<key>NSMainNibFile</key>
 	<string>main</string>
+	<key>NSPrefPaneIconFile</key>
+	<string>playdar.icns</string>
 	<key>NSPrefPaneIconLabel</key>
 	<string>Playdar</string>
 	<key>NSPrincipalClass</key>
 	<string>OrgPlaydarPreferencePane</string>
-	<key>LSMinimumSystemVersion</key>
+	<key>CFBundleDisplayName</key>
 	<string>10.5.0</string>
-	<key>SUEnableAutomaticChecks</key>
+	<key>SUEnalbeAutomaticChecks</key>
 	<true/>
 	<key>SUAllowsAutomaticUpdates</key>
 	<true/>
