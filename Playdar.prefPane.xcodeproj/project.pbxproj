@@ -143,10 +143,12 @@
 			buildPhases = (
 				8D202CEC0486D31800D8A456 /* Resources */,
 				63ADA826108B6344004FFC0C /* Copy Sparkle.framework */,
-				63ADA82C108B637B004FFC0C /* Copy Playdar Directory */,
 				8D202CF00486D31800D8A456 /* Sources */,
 				8D202CF20486D31800D8A456 /* Frameworks */,
-				8D202CF50486D31800D8A456 /* Rez */,
+				63836AD510B0BD7100693966 /* Build Taglib */,
+				63344FAF108C9CA300A96687 /* Build Erlang */,
+				63836AD310B0BD2900693966 /* Build Playdar */,
+				63707AB210B0C69A0013AF85 /* Copy Erlang and Playdar */,
 			);
 			buildRules = (
 			);
@@ -187,32 +189,79 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXRezBuildPhase section */
-		8D202CF50486D31800D8A456 /* Rez */ = {
-			isa = PBXRezBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXRezBuildPhase section */
-
 /* Begin PBXShellScriptBuildPhase section */
-		63ADA82C108B637B004FFC0C /* Copy Playdar Directory */ = {
+		63344FAF108C9CA300A96687 /* Build Erlang */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/playdar",
+				"$(SRCROOT)/homebrew/erlang.rb",
 			);
-			name = "Copy Playdar Directory";
+			name = "Build Erlang";
 			outputPaths = (
-				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/playdar",
+				"$(SRCROOT)/build/Cellar/erlang/",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -fR \"$SRCROOT/playdar\" \"$BUILT_PRODUCTS_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/playdar\"\n";
+			shellScript = "cd \"$SRCROOT/homebrew\"\nbrew install erlang.rb";
+		};
+		63707AB210B0C69A0013AF85 /* Copy Erlang and Playdar */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/build/Cellar/playdar",
+				"$(SRCROOT)/build/Cellar/erlang",
+			);
+			name = "Copy Erlang and Playdar";
+			outputPaths = (
+				"$(CODESIGNING_FOLDER_PATH)/bin",
+				"$(CODESIGNING_FOLDER_PATH)/lib",
+				"$(CODESIGNING_FOLDER_PATH)/ebin",
+				"$(CODESIGNING_FOLDER_PATH)/playdar_modules",
+				"$(CODESIGNING_FOLDER_PATH)/priv",
+				"$(CODESIGNING_FOLDER_PATH)/etc",
+				"$(CODESIGNING_FOLDER_PATH)/README",
+				"$(CODESIGNING_FOLDER_PATH)/LICENSE",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cp -rf $OBJROOT/Cellar/playdar/* $CODESIGNING_FOLDER_PATH\ncp -rf $OBJROOT/Cellar/erlang/* $CODESIGNING_FOLDER_PATH\n";
+		};
+		63836AD310B0BD2900693966 /* Build Playdar */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/homebrew/playdar.rb",
+				"$(SRCROOT)/build/Cellar/taglib/libtag.a",
+			);
+			name = "Build Playdar";
+			outputPaths = (
+				"$(SRCROOT)/build/Cellar/playdar/",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"$SRCROOT/homebrew\"\nbrew install playdar.rb";
+		};
+		63836AD510B0BD7100693966 /* Build Taglib */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/homebrew/taglib.rb",
+			);
+			name = "Build Taglib";
+			outputPaths = (
+				"$(SRCROOT)/build/Cellar/taglib/libtag.a",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"$SRCROOT/homebrew\"\nbrew install taglib.rb";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -244,6 +293,10 @@
 				GCC_PREFIX_HEADER = pc.h;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/PreferencePanes";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/build/Cellar/taglib\"",
+				);
 				PRODUCT_NAME = Playdar;
 				WRAPPER_EXTENSION = prefPane;
 				ZERO_LINK = YES;
@@ -263,6 +316,10 @@
 				GCC_PREFIX_HEADER = pc.h;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/PreferencePanes";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/build/Cellar/taglib\"",
+				);
 				PRODUCT_NAME = Playdar;
 				WRAPPER_EXTENSION = prefPane;
 			};
