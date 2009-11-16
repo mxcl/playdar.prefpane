@@ -57,15 +57,6 @@ end:
     return pid;
 }
 
-static inline NSString* fullname()
-{
-    // being cautious
-    NSString* fullname = NSFullUserName();
-    return (fullname && [fullname length] > 0) ? fullname : NSUserName();
-}
-
-
-
 static void kqueue_termination_callback(CFFileDescriptorRef f, CFOptionFlags callBackTypes, void* self)
 {
     [(id)self performSelector:@selector(daemonTerminated:) withObject:nil];
@@ -104,24 +95,19 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
 
 @implementation OrgPlaydarPreferencePane
 
--(NSString*)playdarDir
-{
-    return [[[self bundle] resourcePath] stringByAppendingPathComponent:@"playdar"];
-}
-
 -(NSString*)startScriptPath
 {
-    return [[self playdarDir] stringByAppendingPathComponent:@"start.sh"];
+    return [[[self bundle] bundlePath] stringByAppendingPathComponent:@"Contents/MacOS/erlexec_playdar"];
 }
 
 -(NSString*)playdarctl
 {
-    return [[self playdarDir] stringByAppendingPathComponent:@"playdarctl"];
+    return [[[self bundle] bundlePath] stringByAppendingPathComponent:@"bin/playdarctl"];
 }
 
 -(NSString*)playdarConf
 {
-    return [[self playdarDir] stringByAppendingPathComponent:@"etc/playdar.conf"];
+    return [[[self bundle] bundlePath] stringByAppendingPathComponent:@"etc/playdar.conf"];
 }
 
 -(void)mainViewDidLoad
@@ -135,15 +121,9 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
 
     pid = playdar_pid();
     if(pid){
-        // watch the pid for termination
-        kqueue_watch_pid(pid, self);
-        
-        [enable setState:NSOnState];
+        kqueue_watch_pid(pid, self); // watch the pid for termination
+        [big_switch setState:NSOnState];
         [demos setHidden:false];
-        [info setHidden:false];
-        NSSize size = [[self mainView] frame].size;
-        size.height += 20;
-        [[self mainView] setFrameSize:size];
     }
     else
         START_POLL;
@@ -167,20 +147,24 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     if(select) [popup selectItemAtIndex:index];
 }
 
--(void)onScan:(id)sender
+-(void)scan
 {
     @try {
         scanner_task = [[NSTask alloc] init];
-        [scanner_task setLaunchPath:[self playdarctl]];
-        [scanner_task setArguments:[NSArray arrayWithObjects:@"scan", [popup titleOfSelectedItem], nil]];
+        scanner_task.launchPath = [self playdarctl];
+        scanner_task.arguments = [NSArray arrayWithObjects:@"scan", [popup titleOfSelectedItem], nil];
         [scanner_task launch];
 
         [scan_spinner startAnimation:self];
+        [scanning setHidden:false];
 
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(scanComplete:)
                                                      name:NSTaskDidTerminateNotification
                                                    object:scanner_task];
+
+        
+        [scan_spinner startAnimation:self];
     }
     @catch (NSException* e)
     {
@@ -191,26 +175,7 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
 -(void)scanComplete:(NSNotification*)note
 {
     [scan_spinner stopAnimation:self];
-}
-
--(void)representHiddenParts
-{   
-    bool const is_dead = pid == 0;
-    
-    // eg. if we're hidden, and playdar isn't running, then GUI representation is already correct
-    if([info isHidden] != is_dead){    
-        [demos setHidden:is_dead];
-        [info setHidden:is_dead];  
-        
-        int const step = is_dead ? -20 : 20;
-        NSWindow* w = [popup window];
-        NSRect rect = [w frame];
-        rect.size.height += step;
-        rect.origin.y -= step;
-        [w setFrame:rect display:true animate:true];
-    }
-    if([self isLoginItem] == is_dead)
-        [self setLoginItem:!is_dead];
+    [scanning setStringValue:@"Scan complete"];
 }
 
 -(void)poll:(NSTimer*)_poll_timer
@@ -219,11 +184,10 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
         [poll_timer invalidate];
         poll_timer = nil;
         kqueue_watch_pid(pid, self);
-        [enable setState:NSOnState];
-        [self representHiddenParts];
+        [big_switch setState:NSOnState];
     }
 }
-         
+
 -(void)stop
 {
     NSTask* task = [[NSTask alloc] init];
@@ -245,32 +209,11 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     else if(pid == 0)
         ; // state machine error!
     else if(kill(pid, SIGKILL) == -1 && errno != ESRCH){
-        [enable setState:NSOnState];
+        [big_switch setState:NSOnState];
         NSRunCriticalAlertPanel(@"Could not kill daemon",
                                 @"Perhaps you don't have the right permissions?", nil, nil, nil);
     }else{
         // the kqueue event will tell us when the process exits
-    }    
-}
- 
--(void)startInTerminal
-{
-    daemon_task = [[NSTask alloc] init];
-    [daemon_task setLaunchPath:@"/usr/bin/open"];
-    [daemon_task setArguments:[NSArray arrayWithObjects:[self startScriptPath], @"-aTerminal", nil]];
-    [daemon_task launch];
-
-    pid = -100; //HACK
-    [self representHiddenParts];
-    [daemon_task waitUntilExit];
-    pid = playdar_pid();
-    daemon_task = nil;
-
-    if(pid)
-        kqueue_watch_pid(pid, self);
-    else {
-        [enable setState:NSOffState];
-        [self representHiddenParts];
     }    
 }
 
@@ -279,18 +222,72 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     daemon_task = [[NSTask alloc] init];
     [daemon_task setLaunchPath:[self startScriptPath]];
     [daemon_task setArguments:[NSArray arrayWithObject:@"-d"]];
+    NSLog(@"Hi! %s", [big_switch state] == NSOffState ? "Off" : "On");
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(daemonTerminated:)
                                                  name:NSTaskDidTerminateNotification
                                                object:daemon_task];
     [daemon_task launch];
-    pid = [daemon_task processIdentifier];    
+    pid = [daemon_task processIdentifier];
+
+    scanning.stringValue = @"Starting Resolution Engines";
+    [scan_spinner startAnimation:self];
+
+    #define CHECK_READY_FOR_SCAN \
+        [self performSelector:@selector(checkReadyForScan) withObject:nil afterDelay:0.2];
+
+    CHECK_READY_FOR_SCAN
+}
+
+-(void)checkReadyForScan
+{
+    NSTask* task = [[NSTask alloc] init];
+    [task setLaunchPath:[self playdarctl]];
+    [task setArguments:[NSArray arrayWithObject:@"numfiles"]];
+    [task setStandardOutput:[NSPipe pipe]]; 
+    [task launch];
+    [task waitUntilExit];
+    
+    if (task.terminationStatus != 0)
+        CHECK_READY_FOR_SCAN
+    else {
+        NSData* data = [[[task standardOutput] fileHandleForReading] readDataToEndOfFile];
+        NSString* s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog (@"got\n%@", s);
+
+        if ([s intValue] <= 0)
+            [self scan];
+        else
+            [scanning setStringValue:[NSString stringWithFormat:@"%@ items of music", s]];
+    }
+
+        
+}
+
+-(void)startInTerminal
+{
+    daemon_task = [[NSTask alloc] init];
+    [daemon_task setLaunchPath:@"/usr/bin/open"];
+    [daemon_task setArguments:[NSArray arrayWithObjects:[self startScriptPath], @"-aTerminal", nil]];
+    [daemon_task launch];
+
+    pid = -100; //HACK
+    [daemon_task waitUntilExit];
+    pid = playdar_pid();
+    daemon_task = nil;
+
+    if(pid)
+        kqueue_watch_pid(pid, self);
+    else
+        [big_switch setState:NSOffState]; 
 }
 
 -(void)onEnable:(id)sender
-{       
-    if ([enable state] == NSOffState) {
+{
+    NSLog(@"Hi! %s", [big_switch state] == NSOffState ? "Off" : "On");
+    
+    if ([big_switch state] == NSOffState) {
         [self stop];
         return;
     }
@@ -326,7 +323,6 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
         // unexpectedly there is already a playdar instance running!
         kqueue_watch_pid(pid, self);
     }
-    [self representHiddenParts];
 }
 
 -(void)daemonTerminated:(NSNotification*)note
@@ -339,62 +335,11 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     pid = 0;
         
     [NSObject cancelPreviousPerformRequestsWithTarget:spinner];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self]; // FIXME a bit stupid no?
     [spinner stopAnimation:self];
-    [enable setState:NSOffState];
-    [enable setEnabled:true];
-    [self representHiddenParts];
+    [big_switch setState:NSOffState];
+    [big_switch setEnabled:true];
     START_POLL;
-}
-
--(void)setLoginItem:(bool)enabled
-{
-#if 0
-	CFArrayRef loginItems = NULL;
-	NSURL *url = [NSURL fileURLWithPath:[self startScriptPath]];
-	int existingLoginItemIndex = -1;
-	OSStatus err = LIAECopyLoginItems(&loginItems);
-	if(err == noErr) {
-		NSEnumerator *enumerator = [(NSArray *)loginItems objectEnumerator];
-		NSDictionary *loginItemDict;
-        
-		while((loginItemDict = [enumerator nextObject])) {
-			if([[loginItemDict objectForKey:(NSString *)kLIAEURL] isEqual:url]) {
-				existingLoginItemIndex = [(NSArray *)loginItems indexOfObjectIdenticalTo:loginItemDict];
-				break;
-			}
-		}
-	}
-    
-	if(enabled && (existingLoginItemIndex == -1))
-		LIAEAddURLAtEnd((CFURLRef)url, false);
-	else if(!enabled && (existingLoginItemIndex != -1))
-		LIAERemove(existingLoginItemIndex);
-    
-	if(loginItems)
-		CFRelease(loginItems);
-#endif
-}
-
--(bool)isLoginItem
-{
-#if 0
-    Boolean foundIt = false;
-    CFArrayRef loginItems = NULL;
-    CFURLRef url = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)[self startScriptPath], kCFURLPOSIXPathStyle, false);
-    OSStatus err = LIAECopyLoginItems(&loginItems);
-    if(err == noErr) {
-        for(CFIndex i=0, N=CFArrayGetCount(loginItems); i<N; ++i) {
-            CFDictionaryRef loginItem = CFArrayGetValueAtIndex(loginItems, i);
-            foundIt = CFEqual(CFDictionaryGetValue(loginItem, kLIAEURL), url);
-            if(foundIt) break;
-        }
-        CFRelease(loginItems);
-    }
-    CFRelease(url);  
-    return foundIt;
-#else
-    return true;
-#endif
 }
 
 ////// Directory selector
@@ -441,16 +386,6 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
 
 -(IBAction)onCloseAdvanced:(id)sender
 {
-#if 0
-    if([[NSUserDefaults standardUserDefaults] boolForKey:MBHomemade]){
-        NSString* path = [self bin]; //use path that script eventually uses
-        if([[NSFileManager defaultManager] isExecutableFileAtPath:path] == false){
-            NSRunAlertPanel( @"Bad path", [path stringByAppendingString:@" isn't playdar"], nil, nil, nil );
-            return;
-        }
-    }
-#endif
-
     [advanced_window orderOut:nil];
     [NSApp endSheet:advanced_window];
 }

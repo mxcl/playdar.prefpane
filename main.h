@@ -17,6 +17,7 @@
 */
 
 #import <PreferencePanes/PreferencePanes.h>
+#import "MBSliderButton.h"
 
 // long class name is because we get loaded into System Preferences process, so 
 // we are required to be ultra verbose
@@ -24,32 +25,28 @@
 @interface OrgPlaydarPreferencePane : NSPreferencePane 
 {
     IBOutlet NSPopUpButton* popup;
-    IBOutlet NSButton* scan;
-    IBOutlet NSButton* enable;
+    IBOutlet MBSliderButton* big_switch;
     IBOutlet NSButton* demos;
-    IBOutlet NSTextField* info;
     IBOutlet NSWindow* advanced_window;
     IBOutlet NSProgressIndicator* spinner;
     IBOutlet NSProgressIndicator* scan_spinner;
+    IBOutlet NSTextField* scanning;
     
     NSTask* daemon_task;
     NSTask* scanner_task;
     NSTimer* poll_timer;
+    NSTimer* check_startup_status_timer;
     pid_t pid;
 }
 
 -(void)mainViewDidLoad;
 -(void)addFolder:(NSString*)path setSelected:(bool)select;
 
--(bool)isLoginItem;
--(void)setLoginItem:(bool)enabled;
-
 -(void)openPanelDidEnd:(NSOpenPanel*)panel
             returnCode:(int)returnCode
            contextInfo:(void*)contextInfo;
 
 -(IBAction)onSelect:(id)sender;
--(IBAction)onScan:(id)sender;
 -(IBAction)onEnable:(id)sender;
 -(IBAction)onDemos:(id)sender;
 -(IBAction)onHelp:(id)sender;

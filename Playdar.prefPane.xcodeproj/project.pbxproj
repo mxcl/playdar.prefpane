@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		638168BE10B0D5AF00CADBD5 /* erlexec_playdar in Copy erlexec_playdar */ = {isa = PBXBuildFile; fileRef = 638168B110B0D5AA00CADBD5 /* erlexec_playdar */; };
+		639969C3108E401800F7CE1F /* MBSliderButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 639969C2108E401800F7CE1F /* MBSliderButton.m */; };
+		639969CA108E40B300F7CE1F /* button_surround.png in Resources */ = {isa = PBXBuildFile; fileRef = 639969C8108E40B300F7CE1F /* button_surround.png */; };
+		639969CB108E40B300F7CE1F /* button_knob.png in Resources */ = {isa = PBXBuildFile; fileRef = 639969C9108E40B300F7CE1F /* button_knob.png */; };
 		63ADA832108B6447004FFC0C /* main.xib in Resources */ = {isa = PBXBuildFile; fileRef = 63A9EFAE108B605C0055B9DA /* main.xib */; };
 		63ADA849108B69AE004FFC0C /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63ADA848108B69AE004FFC0C /* Sparkle.framework */; };
 		63ADA855108B6AB7004FFC0C /* Sparkle.framework in Copy Sparkle.framework */ = {isa = PBXBuildFile; fileRef = 63ADA848108B69AE004FFC0C /* Sparkle.framework */; };
@@ -48,6 +51,10 @@
 		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		32DBCFA20370C41700C91783 /* pc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pc.h; sourceTree = "<group>"; };
 		638168B110B0D5AA00CADBD5 /* erlexec_playdar */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = erlexec_playdar; sourceTree = "<group>"; };
+		639969C1108E401800F7CE1F /* MBSliderButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBSliderButton.h; sourceTree = "<group>"; };
+		639969C2108E401800F7CE1F /* MBSliderButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBSliderButton.m; sourceTree = "<group>"; };
+		639969C8108E40B300F7CE1F /* button_surround.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = button_surround.png; sourceTree = "<group>"; };
+		639969C9108E40B300F7CE1F /* button_knob.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = button_knob.png; sourceTree = "<group>"; };
 		63A9EFAE108B605C0055B9DA /* main.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = main.xib; sourceTree = SOURCE_ROOT; };
 		63ADA848108B69AE004FFC0C /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -99,6 +106,8 @@
 				63A9EFAE108B605C0055B9DA /* main.xib */,
 				8D202CF70486D31800D8A456 /* Info.plist */,
 				F506C040013D9D8001CA16C8 /* playdar.icns */,
+				639969C8108E40B300F7CE1F /* button_surround.png */,
+				639969C9108E40B300F7CE1F /* button_knob.png */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -108,6 +117,8 @@
 			children = (
 				F506C03C013D9D7901CA16C8 /* main.h */,
 				F506C03D013D9D7901CA16C8 /* main.m */,
+				639969C1108E401800F7CE1F /* MBSliderButton.h */,
+				639969C2108E401800F7CE1F /* MBSliderButton.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -221,7 +232,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/homebrew\"\nbrew install erlang.rb";
+			shellScript = "cd \"$SRCROOT/homebrew\"\nbrew install -f erlang.rb";
 		};
 		63707AB210B0C69A0013AF85 /* Copy Erlang and Playdar */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -245,7 +256,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -rf $OBJROOT/Cellar/playdar/* $CODESIGNING_FOLDER_PATH\ncp -rf $OBJROOT/Cellar/erlang/* $CODESIGNING_FOLDER_PATH\n";
+			shellScript = "cp -rf $OBJROOT/Cellar/playdar/* $CODESIGNING_FOLDER_PATH\ncp -rf $OBJROOT/Cellar/erlang/* $CODESIGNING_FOLDER_PATH";
 		};
 		63836AD310B0BD2900693966 /* Build Playdar */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -262,7 +273,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/homebrew\"\nbrew install playdar.rb";
+			shellScript = "cd \"$SRCROOT/homebrew\"\nbrew install -f playdar.rb";
 		};
 		63836AD510B0BD7100693966 /* Build Taglib */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -278,7 +289,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/homebrew\"\nbrew install taglib.rb";
+			shellScript = "cd \"$SRCROOT/homebrew\"\nbrew install -f taglib.rb";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -288,6 +299,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D202CF10486D31800D8A456 /* main.m in Sources */,
+				639969C3108E401800F7CE1F /* MBSliderButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
