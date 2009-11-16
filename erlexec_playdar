@@ -1,0 +1,17 @@
+#!/bin/sh
+
+alias erl="exec bin/erl +K true +P 1000000 \
+        -sname playdar@localhost \
+        -pa ebin \
+        -boot start_sasl \
+        -s playdar"
+
+d=`dirname "$0"`
+cd "$d/../.."
+
+if [ "$1" = "-d" ]
+then
+    erl -noinput 1> ~/Library/Logs/playdar.log 2> ~/Library/Logs/playdar.err
+else
+    erl
+fi

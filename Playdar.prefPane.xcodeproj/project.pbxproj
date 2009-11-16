@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		638168BE10B0D5AF00CADBD5 /* erlexec_playdar in Copy erlexec_playdar */ = {isa = PBXBuildFile; fileRef = 638168B110B0D5AA00CADBD5 /* erlexec_playdar */; };
 		63ADA832108B6447004FFC0C /* main.xib in Resources */ = {isa = PBXBuildFile; fileRef = 63A9EFAE108B605C0055B9DA /* main.xib */; };
 		63ADA849108B69AE004FFC0C /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63ADA848108B69AE004FFC0C /* Sparkle.framework */; };
 		63ADA855108B6AB7004FFC0C /* Sparkle.framework in Copy Sparkle.framework */ = {isa = PBXBuildFile; fileRef = 63ADA848108B69AE004FFC0C /* Sparkle.framework */; };
@@ -17,6 +18,17 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		638168B310B0D5AB00CADBD5 /* Copy erlexec_playdar */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 6;
+			files = (
+				638168BE10B0D5AF00CADBD5 /* erlexec_playdar in Copy erlexec_playdar */,
+			);
+			name = "Copy erlexec_playdar";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		63ADA826108B6344004FFC0C /* Copy Sparkle.framework */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -35,6 +47,7 @@
 		089C167FFE841241C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		32DBCFA20370C41700C91783 /* pc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pc.h; sourceTree = "<group>"; };
+		638168B110B0D5AA00CADBD5 /* erlexec_playdar */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = erlexec_playdar; sourceTree = "<group>"; };
 		63A9EFAE108B605C0055B9DA /* main.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = main.xib; sourceTree = SOURCE_ROOT; };
 		63ADA848108B69AE004FFC0C /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -130,6 +143,7 @@
 			isa = PBXGroup;
 			children = (
 				32DBCFA20370C41700C91783 /* pc.h */,
+				638168B110B0D5AA00CADBD5 /* erlexec_playdar */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -149,6 +163,7 @@
 				63344FAF108C9CA300A96687 /* Build Erlang */,
 				63836AD310B0BD2900693966 /* Build Playdar */,
 				63707AB210B0C69A0013AF85 /* Copy Erlang and Playdar */,
+				638168B310B0D5AB00CADBD5 /* Copy erlexec_playdar */,
 			);
 			buildRules = (
 			);
