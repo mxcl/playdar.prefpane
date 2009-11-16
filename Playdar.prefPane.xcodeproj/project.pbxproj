@@ -199,6 +199,8 @@
 			files = (
 				8D202CEE0486D31800D8A456 /* playdar.icns in Resources */,
 				63ADA832108B6447004FFC0C /* main.xib in Resources */,
+				639969CA108E40B300F7CE1F /* button_surround.png in Resources */,
+				639969CB108E40B300F7CE1F /* button_knob.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
