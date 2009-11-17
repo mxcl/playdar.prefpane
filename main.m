@@ -107,7 +107,7 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
 
 -(NSString*)playdarConf
 {
-    return [[[self bundle] bundlePath] stringByAppendingPathComponent:@"etc/playdar.conf"];
+    return [NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/org.playdar.conf"];
 }
 
 -(void)mainViewDidLoad
