@@ -372,7 +372,7 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
 
 -(IBAction)onHelp:(id)sender
 {
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://methylblue.com/playdar/faq.php"]];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://wiki.github.com/RJ/playdar-core/"]];
 }
 
 -(IBAction)onAdvanced:(id)sender
