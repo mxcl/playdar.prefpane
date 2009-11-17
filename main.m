@@ -222,8 +222,7 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     daemon_task = [[NSTask alloc] init];
     [daemon_task setLaunchPath:[self startScriptPath]];
     [daemon_task setArguments:[NSArray arrayWithObject:@"-d"]];
-    NSLog(@"Hi! %s", [big_switch state] == NSOffState ? "Off" : "On");
-    
+
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(daemonTerminated:)
                                                  name:NSTaskDidTerminateNotification
@@ -392,7 +391,17 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
 
 -(IBAction)onEditConfigFile:(id)sender;
 {
-    #define OPEN(x) [[NSWorkspace sharedWorkspace] openFile:[self playdarConf] withApplication:x]
+    NSFileManager* fm = [NSFileManager defaultManager];
+    NSString* conf = [self playdarConf];
+    
+    if (![fm fileExistsAtPath:conf]) {
+        NSString* template = [[[self bundle] bundlePath] stringByAppendingPathComponent:@"etc/playdar.conf.example"];
+        NSError* e;
+        BOOL b = [fm copyItemAtPath:template toPath:conf error:&e];
+        if (!b) [[NSAlert alertWithError:e] runModal];
+    }
+    
+    #define OPEN(x) [[NSWorkspace sharedWorkspace] openFile:conf withApplication:x]
     if (!OPEN(@"TextMate")) OPEN(@"TextEdit");
 }
 
