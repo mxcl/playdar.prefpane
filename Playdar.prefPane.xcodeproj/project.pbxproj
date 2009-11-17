@@ -170,9 +170,7 @@
 				63ADA826108B6344004FFC0C /* Copy Sparkle.framework */,
 				8D202CF00486D31800D8A456 /* Sources */,
 				8D202CF20486D31800D8A456 /* Frameworks */,
-				63836AD510B0BD7100693966 /* Build Taglib */,
-				63344FAF108C9CA300A96687 /* Build Erlang */,
-				63836AD310B0BD2900693966 /* Build Playdar */,
+				63D4A44910B329BD00FE8ED2 /* Build Taglib, Erlang and Playdar */,
 				63707AB210B0C69A0013AF85 /* Copy Erlang and Playdar */,
 				638168B310B0D5AB00CADBD5 /* Copy erlexec_playdar */,
 			);
@@ -218,22 +216,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		63344FAF108C9CA300A96687 /* Build Erlang */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/homebrew/erlang.rb",
-			);
-			name = "Build Erlang";
-			outputPaths = (
-				"$(SRCROOT)/build/Cellar/erlang/",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/homebrew\"\nbrew install -f erlang.rb";
-		};
 		63707AB210B0C69A0013AF85 /* Copy Erlang and Playdar */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -258,38 +240,19 @@
 			shellPath = /bin/sh;
 			shellScript = "cp -rf $OBJROOT/Cellar/playdar/* $CODESIGNING_FOLDER_PATH\ncp -rf $OBJROOT/Cellar/erlang/* $CODESIGNING_FOLDER_PATH";
 		};
-		63836AD310B0BD2900693966 /* Build Playdar */ = {
+		63D4A44910B329BD00FE8ED2 /* Build Taglib, Erlang and Playdar */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/homebrew/playdar.rb",
-				"$(SRCROOT)/build/Cellar/taglib/libtag.a",
 			);
-			name = "Build Playdar";
+			name = "Build Taglib, Erlang and Playdar";
 			outputPaths = (
-				"$(SRCROOT)/build/Cellar/playdar/",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/homebrew\"\nbrew install -f playdar.rb";
-		};
-		63836AD510B0BD7100693966 /* Build Taglib */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/homebrew/taglib.rb",
-			);
-			name = "Build Taglib";
-			outputPaths = (
-				"$(SRCROOT)/build/Cellar/taglib/libtag.a",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/homebrew\"\nbrew install -f taglib.rb";
+			shellPath = /usr/bin/make;
+			shellScript = "HOMEBREW = $(SRCROOT)/homebrew\nCELLAR = $(OBJROOT)/Cellar\n\nall: $(CELLAR)/taglib $(CELLAR)/playdar $(CELLAR)/erlang\n\n$(CELLAR)/taglib: $(HOMEBREW)/taglib.rb\n\tcd \"$(<D)\" && brew install -f $(<F)\n\n$(CELLAR)/playdar: $(HOMEBREW)/playdar.rb $(CELLAR)/taglib\n\tcd \"$(<D)\" && brew install -f $(<F)\n\n$(CELLAR)/erlang: $(HOMEBREW)/erlang.rb\n\tcd \"$(<D)\" && brew install -f $(<F)\n\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
