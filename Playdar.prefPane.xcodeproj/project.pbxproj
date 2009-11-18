@@ -251,8 +251,8 @@
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /usr/bin/make;
-			shellScript = "HOMEBREW = $(SRCROOT)/homebrew\nCELLAR = $(OBJROOT)/Cellar\n\nall: $(CELLAR)/taglib $(CELLAR)/playdar $(CELLAR)/erlang\n\n$(CELLAR)/taglib: $(HOMEBREW)/taglib.rb\n\tcd \"$(<D)\" && brew install -f $(<F)\n\n$(CELLAR)/playdar: $(HOMEBREW)/playdar.rb $(CELLAR)/taglib\n\tcd \"$(<D)\" && brew install -f $(<F)\n\n$(CELLAR)/erlang: $(HOMEBREW)/erlang.rb\n\tcd \"$(<D)\" && brew install -f $(<F)\n\n";
+			shellPath = "/usr/bin/make -f";
+			shellScript = "HOMEBREW = $(SRCROOT)/homebrew\nCELLAR = $(OBJROOT)/Cellar\n\n.PHONY: all\n\nall: $(CELLAR)/taglib/libtag.a $(CELLAR)/playdar/bin/playdarctl $(CELLAR)/erlang/bin/erlc\n\n$(CELLAR)/taglib/libtag.a: $(HOMEBREW)/taglib.rb\n\tcd \"$(<D)\" && brew install -f $(<F)\n\n$(CELLAR)/playdar/bin/playdarctl: $(HOMEBREW)/playdar.rb $(CELLAR)/taglib/libtag.a\n\tcd \"$(<D)\" && brew install -f $(<F)\n\n$(CELLAR)/erlang/bin/erlc: $(HOMEBREW)/erlang.rb\n\tcd \"$(<D)\" && brew install -f $(<F)\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

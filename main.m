@@ -110,6 +110,35 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     return [NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/org.playdar.conf"];
 }
 
+-(int)numFiles
+{
+    NSTask* task = [[NSTask alloc] init];
+    [task setLaunchPath:[self playdarctl]];
+    [task setArguments:[NSArray arrayWithObject:@"numfiles"]];
+    [task setStandardOutput:[NSPipe pipe]]; 
+    [task launch];
+    [task waitUntilExit];
+    
+    // if not zero then we library module isn't ready yet
+    if (task.terminationStatus != 0)
+        return -1;
+    
+    NSData* data = [[[task standardOutput] fileHandleForReading] readDataToEndOfFile];
+    return [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] intValue];
+}
+
+-(void)showTrackCount:(int)n
+{
+    NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
+    [formatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
+    [formatter setFormat: @"#,###"];
+    NSString* tracks = [formatter stringFromNumber:[NSNumber numberWithInt:n]];
+    [formatter release];
+    
+    [scanning setHidden:NO];        
+    [scanning setStringValue:[tracks stringByAppendingString:@" local tracks known to Playdar"]];
+}
+
 -(void)mainViewDidLoad
 {   
     [[popup menu] addItem:[NSMenuItem separatorItem]];
@@ -124,10 +153,11 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
         kqueue_watch_pid(pid, self); // watch the pid for termination
         [big_switch setState:NSOnState];
         [demos setHidden:false];
+        [self showTrackCount:[self numFiles]];
     }
     else
         START_POLL;
-
+    
 ////// Sparkle
     SUUpdater* updater = [SUUpdater updaterForBundle:[self bundle]];
     [updater resetUpdateCycle];
@@ -147,6 +177,28 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     if(select) [popup selectItemAtIndex:index];
 }
 
+#define PPP_ANIMATION(x) \
+    id d1 = [NSDictionary dictionaryWithObjectsAndKeys:demos, NSViewAnimationTargetKey, x, NSViewAnimationEffectKey, nil]; \
+    id d2 = [NSDictionary dictionaryWithObjectsAndKeys:scanning, NSViewAnimationTargetKey, x, NSViewAnimationEffectKey, nil]; \
+    id a = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:d1, d2, nil]]; \
+    [a setDuration:0.45]; \
+    [a setAnimationCurve:NSAnimationEaseIn]; \
+    [a setAnimationBlockingMode:NSAnimationBlocking]; \
+    [a startAnimation]; \
+    [a release];
+
+-(void)fadeInDemoButton
+{
+    [demos setHidden:false];
+    PPP_ANIMATION(NSViewAnimationFadeInEffect)
+}
+
+-(void)fadeOutDemoButton
+{
+    PPP_ANIMATION(NSViewAnimationFadeOutEffect)
+    [demos setHidden:true];
+}
+
 -(void)scan
 {
     @try {
@@ -156,14 +208,14 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
         [scanner_task launch];
 
         [scan_spinner startAnimation:self];
-        [scanning setHidden:false];
+        [scanning setStringValue:@"Scanning…"];
+        [scanning setHidden:NO];
 
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(scanComplete:)
                                                      name:NSTaskDidTerminateNotification
                                                    object:scanner_task];
 
-        
         [scan_spinner startAnimation:self];
     }
     @catch (NSException* e)
@@ -174,8 +226,9 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
 
 -(void)scanComplete:(NSNotification*)note
 {
+    [self showTrackCount:[self numFiles]];
     [scan_spinner stopAnimation:self];
-    [scanning setStringValue:@"Scan complete"];
+    [self fadeInDemoButton];
 }
 
 -(void)poll:(NSTimer*)_poll_timer
@@ -201,6 +254,7 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     if (task.terminationStatus == 0) {
         daemon_task = nil;
         [spinner stopAnimation:self];
+        [self fadeOutDemoButton];
         return;
     }
 
@@ -230,7 +284,6 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     [daemon_task launch];
     pid = [daemon_task processIdentifier];
 
-    scanning.stringValue = @"Starting Resolution Engines";
     [scan_spinner startAnimation:self];
 
     #define CHECK_READY_FOR_SCAN \
@@ -241,27 +294,19 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
 
 -(void)checkReadyForScan
 {
-    NSTask* task = [[NSTask alloc] init];
-    [task setLaunchPath:[self playdarctl]];
-    [task setArguments:[NSArray arrayWithObject:@"numfiles"]];
-    [task setStandardOutput:[NSPipe pipe]]; 
-    [task launch];
-    [task waitUntilExit];
+    int const n = [self numFiles];
     
-    if (task.terminationStatus != 0)
+    if (n < 0) {
         CHECK_READY_FOR_SCAN
-    else {
-        NSData* data = [[[task standardOutput] fileHandleForReading] readDataToEndOfFile];
-        NSString* s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        NSLog (@"got\n%@", s);
-
-        if ([s intValue] <= 0)
-            [self scan];
-        else
-            [scanning setStringValue:[NSString stringWithFormat:@"%@ items of music", s]];
+        [scanning setHidden:NO];
+        [scanning setStringValue:@"Playdar is starting up…"];
+    } else if (n == 0) {
+        [self scan];
+    } else {
+        [self showTrackCount:n];
+        [scan_spinner stopAnimation:self];
+        [self fadeInDemoButton];
     }
-
-        
 }
 
 -(void)startInTerminal
@@ -284,8 +329,6 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
 
 -(void)onEnable:(id)sender
 {
-    NSLog(@"Hi! %s", [big_switch state] == NSOffState ? "Off" : "On");
-    
     if ([big_switch state] == NSOffState) {
         [self stop];
         return;
@@ -329,13 +372,15 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     [[NSNotificationCenter defaultCenter] removeObserver:self 
                                                     name:NSTaskDidTerminateNotification 
                                                   object:daemon_task];
-   
+
     daemon_task = nil;
     pid = 0;
         
     [NSObject cancelPreviousPerformRequestsWithTarget:spinner];
     [NSObject cancelPreviousPerformRequestsWithTarget:self]; // FIXME a bit stupid no?
     [spinner stopAnimation:self];
+    [scan_spinner stopAnimation:self];
+    [self fadeOutDemoButton];
     [big_switch setState:NSOffState];
     [big_switch setEnabled:true];
     START_POLL;
