@@ -462,6 +462,21 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://localhost:60210"]];
 }
 
+-(IBAction)onShowMenuItem:(id)sender
+{
+    bool state = [sender state] == NSOnState;
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:state forKey:@"org.playdar.ShowMenuItem"];
+    [defaults synchronize]; // so we ensure the menu item can read the setting
+    
+    if (state) {
+        NSString* app = [[[self bundle] bundlePath] stringByAppendingPathComponent:@"Contents/Resources/Playdar.app"];
+        [[NSWorkspace sharedWorkspace] openFile:app withApplication:nil andDeactivate:NO];
+    } else {
+        [NSTask launchedTaskWithLaunchPath:@"/usr/bin/osascript" arguments:[NSArray arrayWithObjects:@"-e", @"tell application \"Playdar\" to quit", nil]];
+    }
+}
+
 @end
 
 

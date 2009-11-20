@@ -14,11 +14,32 @@
 		63ADA832108B6447004FFC0C /* main.xib in Resources */ = {isa = PBXBuildFile; fileRef = 63A9EFAE108B605C0055B9DA /* main.xib */; };
 		63ADA849108B69AE004FFC0C /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63ADA848108B69AE004FFC0C /* Sparkle.framework */; };
 		63ADA855108B6AB7004FFC0C /* Sparkle.framework in Copy Sparkle.framework */ = {isa = PBXBuildFile; fileRef = 63ADA848108B69AE004FFC0C /* Sparkle.framework */; };
+		63E80EEA10B87B6D0094A6E6 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 63E80EE510B87B6D0094A6E6 /* Info.plist */; };
+		63E80EEB10B87B6D0094A6E6 /* off.png in Resources */ = {isa = PBXBuildFile; fileRef = 63E80EE610B87B6D0094A6E6 /* off.png */; };
+		63E80EEC10B87B6D0094A6E6 /* on.png in Resources */ = {isa = PBXBuildFile; fileRef = 63E80EE710B87B6D0094A6E6 /* on.png */; };
+		63E80EED10B87B6D0094A6E6 /* pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 63E80EE810B87B6D0094A6E6 /* pressed.png */; };
+		63E80EEE10B87B6D0094A6E6 /* StatusItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 63E80EE910B87B6D0094A6E6 /* StatusItem.xib */; };
+		63E80EF110B87B8E0094A6E6 /* off.png in Resources */ = {isa = PBXBuildFile; fileRef = 63E80EE610B87B6D0094A6E6 /* off.png */; };
+		63E80EF210B87B8E0094A6E6 /* on.png in Resources */ = {isa = PBXBuildFile; fileRef = 63E80EE710B87B6D0094A6E6 /* on.png */; };
+		63E80EF310B87B8E0094A6E6 /* pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 63E80EE810B87B6D0094A6E6 /* pressed.png */; };
+		63E80EF410B87B8E0094A6E6 /* StatusItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 63E80EE910B87B6D0094A6E6 /* StatusItem.xib */; };
+		63E80EF510B87B990094A6E6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 63E80ED510B87AC10094A6E6 /* main.m */; };
+		63E80EF710B87B990094A6E6 /* StatusItemController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63E80ED710B87AC10094A6E6 /* StatusItemController.m */; };
 		8D202CEE0486D31800D8A456 /* playdar.icns in Resources */ = {isa = PBXBuildFile; fileRef = F506C040013D9D8001CA16C8 /* playdar.icns */; };
 		8D202CF10486D31800D8A456 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F506C03D013D9D7901CA16C8 /* main.m */; };
 		8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F506C035013D953901CA16C8 /* PreferencePanes.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		63E80F0D10B87F8F0094A6E6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 089C1669FE841209C02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D202CE80486D31800D8A456 /* Playdar.prefPane */;
+			remoteInfo = Playdar.prefPane;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		638168B310B0D5AB00CADBD5 /* Copy erlexec_playdar */ = {
@@ -57,6 +78,16 @@
 		639969C9108E40B300F7CE1F /* button_knob.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = button_knob.png; sourceTree = "<group>"; };
 		63A9EFAE108B605C0055B9DA /* main.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = main.xib; sourceTree = SOURCE_ROOT; };
 		63ADA848108B69AE004FFC0C /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
+		63E80ED510B87AC10094A6E6 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = StatusItem/main.m; sourceTree = "<group>"; };
+		63E80ED610B87AC10094A6E6 /* StatusItemController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StatusItemController.h; path = StatusItem/StatusItemController.h; sourceTree = "<group>"; };
+		63E80ED710B87AC10094A6E6 /* StatusItemController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StatusItemController.m; path = StatusItem/StatusItemController.m; sourceTree = "<group>"; };
+		63E80EDE10B87AD30094A6E6 /* Playdar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Playdar.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		63E80EE010B87AD30094A6E6 /* Playdar-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Playdar-Info.plist"; sourceTree = "<group>"; };
+		63E80EE510B87B6D0094A6E6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = StatusItem/Info.plist; sourceTree = "<group>"; };
+		63E80EE610B87B6D0094A6E6 /* off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = off.png; path = StatusItem/off.png; sourceTree = "<group>"; };
+		63E80EE710B87B6D0094A6E6 /* on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = on.png; path = StatusItem/on.png; sourceTree = "<group>"; };
+		63E80EE810B87B6D0094A6E6 /* pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pressed.png; path = StatusItem/pressed.png; sourceTree = "<group>"; };
+		63E80EE910B87B6D0094A6E6 /* StatusItem.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = StatusItem.xib; path = StatusItem/StatusItem.xib; sourceTree = "<group>"; };
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D202CF80486D31800D8A456 /* Playdar.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Playdar.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
@@ -66,6 +97,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		63E80EDC10B87AD30094A6E6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D202CF20486D31800D8A456 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -82,11 +120,12 @@
 		089C166AFE841209C02AAC07 /* Playdar.prefPane */ = {
 			isa = PBXGroup;
 			children = (
-				08FB77AFFE84173DC02AAC07 /* Classes */,
+				08FB77AFFE84173DC02AAC07 /* Prefpane */,
+				63E80EC910B87A9B0094A6E6 /* Statusitem */,
 				32DBCFA10370C40200C91783 /* Other Sources */,
-				089C167CFE841241C02AAC07 /* Resources */,
 				089C1671FE841209C02AAC07 /* Frameworks and Libraries */,
 				19C28FB8FE9D52D311CA2CBB /* Products */,
+				63E80EE010B87AD30094A6E6 /* Playdar-Info.plist */,
 			);
 			name = Playdar.prefPane;
 			sourceTree = "<group>";
@@ -112,15 +151,16 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
-		08FB77AFFE84173DC02AAC07 /* Classes */ = {
+		08FB77AFFE84173DC02AAC07 /* Prefpane */ = {
 			isa = PBXGroup;
 			children = (
+				089C167CFE841241C02AAC07 /* Resources */,
 				F506C03C013D9D7901CA16C8 /* main.h */,
 				F506C03D013D9D7901CA16C8 /* main.m */,
 				639969C1108E401800F7CE1F /* MBSliderButton.h */,
 				639969C2108E401800F7CE1F /* MBSliderButton.m */,
 			);
-			name = Classes;
+			name = Prefpane;
 			sourceTree = "<group>";
 		};
 		1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */ = {
@@ -146,6 +186,7 @@
 			isa = PBXGroup;
 			children = (
 				8D202CF80486D31800D8A456 /* Playdar.prefPane */,
+				63E80EDE10B87AD30094A6E6 /* Playdar.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -159,9 +200,51 @@
 			name = "Other Sources";
 			sourceTree = "<group>";
 		};
+		63E80EC910B87A9B0094A6E6 /* Statusitem */ = {
+			isa = PBXGroup;
+			children = (
+				63E80EE410B87B570094A6E6 /* Resources */,
+				63E80ED510B87AC10094A6E6 /* main.m */,
+				63E80ED610B87AC10094A6E6 /* StatusItemController.h */,
+				63E80ED710B87AC10094A6E6 /* StatusItemController.m */,
+			);
+			name = Statusitem;
+			sourceTree = "<group>";
+		};
+		63E80EE410B87B570094A6E6 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				63E80EE510B87B6D0094A6E6 /* Info.plist */,
+				63E80EE610B87B6D0094A6E6 /* off.png */,
+				63E80EE710B87B6D0094A6E6 /* on.png */,
+				63E80EE810B87B6D0094A6E6 /* pressed.png */,
+				63E80EE910B87B6D0094A6E6 /* StatusItem.xib */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		63E80EDD10B87AD30094A6E6 /* Playdar.app */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 63E80EE310B87AD40094A6E6 /* Build configuration list for PBXNativeTarget "Playdar.app" */;
+			buildPhases = (
+				63E80EDA10B87AD30094A6E6 /* Resources */,
+				63E80EDB10B87AD30094A6E6 /* Sources */,
+				63E80EDC10B87AD30094A6E6 /* Frameworks */,
+				63E80F0610B87CAE0094A6E6 /* Hard link ICNS file */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				63E80F0E10B87F8F0094A6E6 /* PBXTargetDependency */,
+			);
+			name = Playdar.app;
+			productName = Playdar;
+			productReference = 63E80EDE10B87AD30094A6E6 /* Playdar.app */;
+			productType = "com.apple.product-type.application";
+		};
 		8D202CE80486D31800D8A456 /* Playdar.prefPane */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1DBD214808BA80EA00186707 /* Build configuration list for PBXNativeTarget "Playdar.prefPane" */;
@@ -198,11 +281,23 @@
 			projectRoot = "";
 			targets = (
 				8D202CE80486D31800D8A456 /* Playdar.prefPane */,
+				63E80EDD10B87AD30094A6E6 /* Playdar.app */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		63E80EDA10B87AD30094A6E6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				63E80EF110B87B8E0094A6E6 /* off.png in Resources */,
+				63E80EF210B87B8E0094A6E6 /* on.png in Resources */,
+				63E80EF310B87B8E0094A6E6 /* pressed.png in Resources */,
+				63E80EF410B87B8E0094A6E6 /* StatusItem.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D202CEC0486D31800D8A456 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -211,6 +306,11 @@
 				63ADA832108B6447004FFC0C /* main.xib in Resources */,
 				639969CA108E40B300F7CE1F /* button_surround.png in Resources */,
 				639969CB108E40B300F7CE1F /* button_knob.png in Resources */,
+				63E80EEA10B87B6D0094A6E6 /* Info.plist in Resources */,
+				63E80EEB10B87B6D0094A6E6 /* off.png in Resources */,
+				63E80EEC10B87B6D0094A6E6 /* on.png in Resources */,
+				63E80EED10B87B6D0094A6E6 /* pressed.png in Resources */,
+				63E80EEE10B87B6D0094A6E6 /* StatusItem.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -271,9 +371,32 @@
 			shellPath = "/usr/bin/make -f";
 			shellScript = "HOMEBREW = $(SRCROOT)/homebrew\nCELLAR = $(OBJROOT)/Cellar\n\n.PHONY: all\n\nall: $(CELLAR)/taglib/libtag.a $(CELLAR)/playdar/bin/playdarctl $(CELLAR)/erlang/bin/erlc\n\n$(CELLAR)/taglib/libtag.a: $(HOMEBREW)/taglib.rb\n\tcd \"$(<D)\" && brew install -f $(<F)\n\n$(CELLAR)/playdar/bin/playdarctl: $(HOMEBREW)/playdar.rb $(CELLAR)/taglib/libtag.a\n\tcd \"$(<D)\" && brew install -f $(<F)\n\n$(CELLAR)/erlang/bin/erlc: $(HOMEBREW)/erlang.rb\n\tcd \"$(<D)\" && brew install -f $(<F)\n";
 		};
+		63E80F0610B87CAE0094A6E6 /* Hard link ICNS file */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Hard link ICNS file";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd $BUILD_DIR/$CONFIGURATION$EFFECTIVE_PLATFORM_NAME/Playdar.prefPane/Contents/Resources\npwd\nln -f playdar.icns Playdar.app/Contents/Resources";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		63E80EDB10B87AD30094A6E6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				63E80EF510B87B990094A6E6 /* main.m in Sources */,
+				63E80EF710B87B990094A6E6 /* StatusItemController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D202CF00486D31800D8A456 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -284,6 +407,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		63E80F0E10B87F8F0094A6E6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8D202CE80486D31800D8A456 /* Playdar.prefPane */;
+			targetProxy = 63E80F0D10B87F8F0094A6E6 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		1DBD214908BA80EA00186707 /* Debug */ = {
@@ -367,6 +498,61 @@
 			};
 			name = Release;
 		};
+		63E80EE110B87AD40094A6E6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Playdar.prefPane/Contents/Resources";
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_ENABLE_OBJC_GC = unsupported;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = StatusItem/Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				LLVM_LTO = NO;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = Playdar;
+			};
+			name = Debug;
+		};
+		63E80EE210B87AD40094A6E6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Playdar.prefPane/Contents/Resources";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_OBJC_GC = unsupported;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = StatusItem/Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				LLVM_LTO = YES;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = Playdar;
+				SYMROOT = build;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -384,6 +570,15 @@
 			buildConfigurations = (
 				1DBD214D08BA80EA00186707 /* Debug */,
 				1DBD214E08BA80EA00186707 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		63E80EE310B87AD40094A6E6 /* Build configuration list for PBXNativeTarget "Playdar.app" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				63E80EE110B87AD40094A6E6 /* Debug */,
+				63E80EE210B87AD40094A6E6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

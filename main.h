@@ -46,6 +46,7 @@
             returnCode:(int)returnCode
            contextInfo:(void*)contextInfo;
 
+-(IBAction)onShowMenuItem:(id)sender;
 -(IBAction)onSelect:(id)sender;
 -(IBAction)onEnable:(id)sender;
 -(IBAction)onDemos:(id)sender;

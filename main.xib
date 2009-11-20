@@ -12,7 +12,7 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="6"/>
+			<integer value="324"/>
 			<integer value="172"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
@@ -245,7 +245,7 @@
 										<object class="NSTextField" id="806304349">
 											<reference key="NSNextResponder" ref="770495325"/>
 											<int key="NSvFlags">-2147483380</int>
-											<string key="NSFrame">{{21, 24}, {276, 14}}</string>
+											<string key="NSFrame">{{22, 24}, {285, 14}}</string>
 											<reference key="NSSuperview" ref="770495325"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="482094938">
@@ -302,7 +302,7 @@
 						<object class="NSButton" id="538279016">
 							<reference key="NSNextResponder" ref="1037298196"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{244, 21}, {252, 18}}</string>
+							<string key="NSFrame">{{245, 21}, {252, 18}}</string>
 							<reference key="NSSuperview" ref="1037298196"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="343682815">
@@ -814,6 +814,30 @@
 					</object>
 					<int key="connectionID">349</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">onShowMenuItem:</string>
+						<reference key="source" ref="294453543"/>
+						<reference key="destination" ref="538279016"/>
+					</object>
+					<int key="connectionID">356</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.org.playdar.ShowMenuItem</string>
+						<reference key="source" ref="538279016"/>
+						<reference key="destination" ref="510428001"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="538279016"/>
+							<reference key="NSDestination" ref="510428001"/>
+							<string key="NSLabel">value: values.org.playdar.ShowMenuItem</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.org.playdar.ShowMenuItem</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">361</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -1272,11 +1296,11 @@
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{237, 812}, {668, 344}}</string>
+					<string>{{582, 812}, {668, 344}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="0"/>
 					<integer value="0"/>
-					<string>{{237, 812}, {668, 344}}</string>
+					<string>{{582, 812}, {668, 344}}</string>
 					<integer value="1"/>
 					<boolean value="NO"/>
 					<boolean value="NO"/>
@@ -1290,9 +1314,9 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{781, 213}, {465, 295}}</string>
+					<string>{{582, 171}, {465, 295}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{781, 213}, {465, 295}}</string>
+					<string>{{582, 171}, {465, 295}}</string>
 					<integer value="0"/>
 					<boolean value="NO"/>
 					<integer value="1"/>
@@ -1341,6 +1365,11 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<object class="NSMutableArray">
 						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="IBUserGuide">
+							<reference key="view" ref="1037298196"/>
+							<double key="location">626</double>
+							<int key="affinity">0</int>
+						</object>
 					</object>
 					<integer value="1"/>
 				</object>
@@ -1361,7 +1390,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">354</int>
+			<int key="maxID">361</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1421,10 +1450,12 @@
 							<string>onEnable:</string>
 							<string>onHelp:</string>
 							<string>onSelect:</string>
+							<string>onShowMenuItem:</string>
 							<string>onViewStatus:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
