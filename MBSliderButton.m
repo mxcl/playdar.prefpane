@@ -22,8 +22,29 @@
 #define KNOB_MIN_X 0
 #define KNOB_MAX_X (WIDTH-KNOB_WIDTH)
 
-#import "MBSliderButton.h"
+@interface MBKnobAnimation : NSAnimation
+{
+    int start, range;
+}
+@end
+@implementation MBKnobAnimation
+-(id)initWithStart:(int)begin end:(int)end
+{
+    [super init];
+    start = begin;
+    range = end - begin;
+    return self;
+}
+-(void)setCurrentProgress:(NSAnimationProgress)progress
+{
+    int x = start+progress*range;
+    [super setCurrentProgress:progress];
+    [[self delegate] performSelector:@selector(setPosition:) withObject:[NSNumber numberWithInteger:x]];
+}
+@end
 
+
+#import "MBSliderButton.h"
 
 @implementation MBSliderButton
 
@@ -87,6 +108,29 @@
     return state ? NSOnState : NSOffState;
 }
 
+-(void)animateTo:(int)x
+{
+    MBKnobAnimation* a = [[MBKnobAnimation alloc] initWithStart:location.x end:x];
+    [a setDelegate:self];
+    if (location.x == 0 || location.x == KNOB_MAX_X){
+        [a setDuration:0.20];
+        [a setAnimationCurve:NSAnimationEaseInOut];
+    }else{
+        [a setDuration:0.35 * ((fabs(location.x-x))/KNOB_MAX_X)];
+        [a setAnimationCurve:NSAnimationLinear];
+    }
+    
+    [a setAnimationBlockingMode:NSAnimationBlocking];
+    [a startAnimation];
+    [a release];
+}
+
+-(void)setPosition:(NSNumber*)x
+{
+    location.x = [x intValue];
+    [self display];
+}
+
 -(void)setState:(NSInteger)newstate
 {
     if(newstate == [self state])
@@ -146,7 +190,7 @@
                     [self offsetLocationByX:(newDragLocation.x-localLastDragLocation.x)];
                     
                     // update the relative drag location;
-                    localLastDragLocation=newDragLocation;
+                    localLastDragLocation = newDragLocation;
                     
                     // support automatic scrolling during a drag
                     // by calling NSView's autoscroll: method
@@ -157,6 +201,11 @@
                     // mouse up has been detected, 
                     // we can exit the loop
                     loop = NO;
+                    
+                    if (memcmp(&clickLocation, &localLastDragLocation, sizeof(NSPoint)) == 0)
+                        [self animateTo:state ? 0 : KNOB_MAX_X];
+                    else if (location.x > 0 && location.x < KNOB_MAX_X)
+                        [self animateTo:state ? KNOB_MAX_X : 0];
                     
                     //TODO if let go of it halfway then slide to non destructive side
                     
