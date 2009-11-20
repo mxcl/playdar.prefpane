@@ -10,7 +10,7 @@ class Erlang <PlaydarPrefPaneFormula
   depends_on 'icu4c'
 
   def skip_clean? path
-    true
+    path.basename == 'crypto_drv.so' or path == bin+'playdar.smp'
   end
 
   def skips
