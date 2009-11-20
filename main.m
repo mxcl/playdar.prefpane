@@ -16,17 +16,9 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Please forgive my n00bness at Cocoa.
-// I'd actually appreciate it if you emailed me my mistakes! Thanks.
-
 //TODO when launching, watch the NSTask, and say "Crashed :(" if early exit
 //TODO otherwise check status of pid when window becomes key and update button
 //TODO remember path that we scanned with defaults controller
-//TODO log that stupid exception
-//TODO while open auto restart playdar binary if using byo_bin and playdar binary is modified
-//TODO defaults should use org.playdar.plist not com.apple.systempreferences.plist
-//TODO animate in a link to the demo page when user runs the app and it works
-//TODO pipe output to a log file
 
 #import "main.h"
 #include <Sparkle/SUUpdater.h>
@@ -105,9 +97,9 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     return [[[self bundle] bundlePath] stringByAppendingPathComponent:@"bin/playdarctl"];
 }
 
--(NSString*)playdarConf
+-(NSString*)playdarConfDir
 {
-    return [NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/org.playdar.conf"];
+    return [NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/org.playdar"];
 }
 
 -(int)numFiles
@@ -434,20 +426,30 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     [NSApp endSheet:advanced_window];
 }
 
+-(NSString*)playdarModules
+{
+    return [[[self bundle] bundlePath] stringByAppendingPathComponent:@"playdar_modules"];
+}
+
 -(IBAction)onEditConfigFile:(id)sender;
 {
     NSFileManager* fm = [NSFileManager defaultManager];
-    NSString* conf = [self playdarConf];
+    NSString* conf = [self playdarConfDir];
     
-    if (![fm fileExistsAtPath:conf]) {
-        NSString* template = [[[self bundle] bundlePath] stringByAppendingPathComponent:@"etc/playdar.conf.example"];
-        NSError* e;
-        BOOL b = [fm copyItemAtPath:template toPath:conf error:&e];
-        if (!b) [[NSAlert alertWithError:e] runModal];
+    if (![fm fileExistsAtPath:conf]) {       
+        NSTask * task = [[NSTask alloc] init];
+        task.launchPath = @"/usr/bin/tar";
+        task.arguments = [NSArray arrayWithObjects:@"xjf", [[self bundle] pathForResource:@"confs" ofType:@"tbz"], nil];
+        task.currentDirectoryPath = [NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences"];
+        [task launch];
+        [task waitUntilExit];
+
+        if (task.terminationStatus != 0)
+            NSRunCriticalAlertPanel(@"Could not create configuration files", @"Sorry about that old boy.", nil, nil, nil);
     }
     
     #define OPEN(x) [[NSWorkspace sharedWorkspace] openFile:conf withApplication:x]
-    if (!OPEN(@"TextMate")) OPEN(@"TextEdit");
+    if (!OPEN(@"TextMate")) OPEN(@"Finder");
 }
 
 -(IBAction)onDemos:(id)sender

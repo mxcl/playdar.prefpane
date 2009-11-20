@@ -9,8 +9,6 @@ alias erl="exec bin/erl +K true +P 1000000 \
 d=`dirname "$0"`
 cd "$d/../.."
 
-mkdir -p ~/Library/Application\ Support/Playdar
-
 if [ "$1" = "-d" ]
 then
     erl -noinput 1> ~/Library/Logs/playdar.log 2> ~/Library/Logs/playdar.err

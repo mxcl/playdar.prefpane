@@ -171,6 +171,7 @@
 				8D202CF00486D31800D8A456 /* Sources */,
 				8D202CF20486D31800D8A456 /* Frameworks */,
 				63D4A44910B329BD00FE8ED2 /* Build Taglib, Erlang and Playdar */,
+				6308D52410B6F19800657E7D /* Create confs.tar.bz2 */,
 				63707AB210B0C69A0013AF85 /* Copy Erlang and Playdar */,
 				638168B310B0D5AB00CADBD5 /* Copy erlexec_playdar */,
 			);
@@ -216,6 +217,22 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		6308D52410B6F19800657E7D /* Create confs.tar.bz2 */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(OBJECT_ROOT)/Cellar/playdar",
+			);
+			name = "Create confs.tar.bz2";
+			outputPaths = (
+				"$(CODESIGNING_FOLDER_PATH)/Contents/Resources/confs.tar.bz2",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "mkdir -p org.playdar\nORG_PLAYDAR=$PWD/org.playdar\n\nfor x in `find $OBJROOT/Cellar/playdar -name \\*.conf.example`\ndo\n\tcp $x $ORG_PLAYDAR/`basename $x .example`\ndone\n\ncd $ORG_PLAYDAR/..\ntar cjf $CODESIGNING_FOLDER_PATH/Contents/Resources/confs.tbz org.playdar";
+		};
 		63707AB210B0C69A0013AF85 /* Copy Erlang and Playdar */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
