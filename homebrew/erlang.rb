@@ -27,7 +27,6 @@ class Erlang <PlaydarPrefPaneFormula
     debugger
     dialyzer
     docbuilder
-    edoc
     et
     eunit
     gs
