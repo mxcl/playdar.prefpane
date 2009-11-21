@@ -181,14 +181,18 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
 
 -(void)fadeInDemoButton
 {
-    [demos setHidden:false];
-    PPP_ANIMATION(NSViewAnimationFadeInEffect)
+    if([demos isHidden]){
+        [demos setHidden:false];
+        PPP_ANIMATION(NSViewAnimationFadeInEffect)
+    }
 }
 
 -(void)fadeOutDemoButton
 {
-    PPP_ANIMATION(NSViewAnimationFadeOutEffect)
-    [demos setHidden:true];
+    if(![demos isHidden]){
+        PPP_ANIMATION(NSViewAnimationFadeOutEffect)
+        [demos setHidden:true];
+    }
 }
 
 -(void)scan
