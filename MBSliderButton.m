@@ -25,6 +25,7 @@
 @interface MBKnobAnimation : NSAnimation
 {
     int start, range;
+    id delegate;
 }
 @end
 @implementation MBKnobAnimation
@@ -39,7 +40,11 @@
 {
     int x = start+progress*range;
     [super setCurrentProgress:progress];
-    [[self delegate] performSelector:@selector(setPosition:) withObject:[NSNumber numberWithInteger:x]];
+    [delegate performSelector:@selector(setPosition:) withObject:[NSNumber numberWithInteger:x]];
+}
+-(void)setDelegate:(id)d
+{
+    delegate = d;
 }
 @end
 

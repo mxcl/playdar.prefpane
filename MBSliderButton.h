@@ -20,13 +20,12 @@
 #import <PreferencePanes/PreferencePanes.h>
 
 
-@interface MBSliderButton : NSControl <NSAnimationDelegate>
+@interface MBSliderButton : NSControl
 {   
     NSPoint location;
     IBOutlet NSPreferencePane* prefpane;
     NSImage* knob;
-    NSImage* surround;
-    
+    NSImage* surround;   
     bool state;
 }
 
