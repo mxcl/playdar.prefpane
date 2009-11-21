@@ -82,7 +82,6 @@
 		63E80ED610B87AC10094A6E6 /* StatusItemController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StatusItemController.h; path = StatusItem/StatusItemController.h; sourceTree = "<group>"; };
 		63E80ED710B87AC10094A6E6 /* StatusItemController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StatusItemController.m; path = StatusItem/StatusItemController.m; sourceTree = "<group>"; };
 		63E80EDE10B87AD30094A6E6 /* Playdar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Playdar.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		63E80EE010B87AD30094A6E6 /* Playdar-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Playdar-Info.plist"; sourceTree = "<group>"; };
 		63E80EE510B87B6D0094A6E6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = StatusItem/Info.plist; sourceTree = "<group>"; };
 		63E80EE610B87B6D0094A6E6 /* off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = off.png; path = StatusItem/off.png; sourceTree = "<group>"; };
 		63E80EE710B87B6D0094A6E6 /* on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = on.png; path = StatusItem/on.png; sourceTree = "<group>"; };
@@ -125,7 +124,6 @@
 				32DBCFA10370C40200C91783 /* Other Sources */,
 				089C1671FE841209C02AAC07 /* Frameworks and Libraries */,
 				19C28FB8FE9D52D311CA2CBB /* Products */,
-				63E80EE010B87AD30094A6E6 /* Playdar-Info.plist */,
 			);
 			name = Playdar.prefPane;
 			sourceTree = "<group>";
@@ -331,7 +329,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "mkdir -p org.playdar\nORG_PLAYDAR=$PWD/org.playdar\n\nfor x in `find $OBJROOT/Cellar/playdar -name \\*.conf.example`\ndo\n\tcp $x $ORG_PLAYDAR/`basename $x .example`\ndone\n\ncd $ORG_PLAYDAR/..\ntar cjf $CODESIGNING_FOLDER_PATH/Contents/Resources/confs.tbz org.playdar";
+			shellScript = "cd $PROJECT_TEMP_DIR/$CONFIGURATION$EFFECTIVE_PLATFORM_NAME\n\nmkdir -p org.playdar\nORG_PLAYDAR=$PWD/org.playdar\n\nfor x in `find $OBJROOT/Cellar/playdar -name \\*.conf.example`\ndo\n\tmv $x $ORG_PLAYDAR/`basename $x .example`\ndone\n\ncd $ORG_PLAYDAR/..\ntar cjf $CODESIGNING_FOLDER_PATH/Contents/Resources/confs.tbz org.playdar\n\nd=$OBJROOT/Cellar/playdar/etc\ntest -d $d && rmdir $d || true";
 		};
 		63707AB210B0C69A0013AF85 /* Copy Erlang and Playdar */ = {
 			isa = PBXShellScriptBuildPhase;
