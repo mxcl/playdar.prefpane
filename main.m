@@ -323,6 +323,51 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
         [big_switch setState:NSOffState]; 
 }
 
+-(NSString*)menuItemAppPath
+{
+    return [[[self bundle] bundlePath] stringByAppendingPathComponent:@"Contents/Resources/Playdar.app"];
+}
+
+-(void)startAtLogin:(bool)start_at_login
+{
+    //TODO Using FsRefs is better, however I did that with Audioscrobbler.app and
+    // it never seemed to work properly IMO
+    
+    LSSharedFileListRef login_items_ref = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
+    if(login_items_ref == NULL) return;
+    
+    CFURLRef app_url = (CFURLRef)[NSURL fileURLWithPath:[self menuItemAppPath]];
+    
+    LSSharedFileListItemRef item;
+    if(start_at_login){
+        item = LSSharedFileListInsertItemURL(login_items_ref,
+                                             kLSSharedFileListItemLast,
+                                             NULL, // name
+                                             NULL, // icon
+                                             app_url,
+                                             NULL, NULL);
+        if(item)
+            CFRelease(item);
+    }else{
+        UInt32 seed;
+        NSArray *items = [(NSArray*)LSSharedFileListCopySnapshot(login_items_ref, &seed) autorelease];
+        for (id id in items){
+            CFURLRef url;
+            LSSharedFileListItemRef item = (LSSharedFileListItemRef)id;
+            if (LSSharedFileListItemResolve(item, 0, &url, NULL) == noErr){
+                if ([(NSURL*)url isEqual:(NSURL*)app_url]){
+                    LSSharedFileListItemRemove(login_items_ref, item);
+                    break;
+                }
+                if(url)
+                    CFRelease(url);
+            }
+        }
+    }
+    
+    CFRelease(login_items_ref);
+}
+
 -(void)onEnable:(id)sender
 {
     if ([big_switch state] == NSOffState) {
@@ -341,6 +386,8 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
                 [self startInTerminal];
             else
                 [self start];
+            
+            [self startAtLogin:true];
         }
         @catch(NSException* e)
         {
@@ -379,6 +426,7 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     [self fadeOutDemoButton];
     [big_switch setState:NSOffState];
     [big_switch setEnabled:true];
+    [self startAtLogin:false];
     START_POLL;
 }
 
@@ -474,7 +522,7 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     [defaults synchronize]; // so we ensure the menu item can read the setting
     
     if (state) {
-        NSString* app = [[[self bundle] bundlePath] stringByAppendingPathComponent:@"Contents/Resources/Playdar.app"];
+        NSString* app = [self menuItemAppPath];
         [[NSWorkspace sharedWorkspace] openFile:app withApplication:nil andDeactivate:NO];
     } else {
         [NSTask launchedTaskWithLaunchPath:@"/usr/bin/osascript" arguments:[NSArray arrayWithObjects:@"-e", @"tell application \"Playdar\" to quit", nil]];
