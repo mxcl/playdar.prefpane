@@ -1,20 +1,13 @@
-//
-//  StatusItemController.h
-//  Playdar.prefPane
-//
-//  Created by Max Howell on 18/11/2009.
-//  Copyright 2009 Methylblue. All rights reserved.
-//
-
 #import <Cocoa/Cocoa.h>
 
+@class DaemonController;
 
 @interface StatusItemController : NSObject
 {
     NSStatusItem* status_item;
     IBOutlet NSMenu* menu;
     IBOutlet NSMenuItem* toggle;
-    bool on;
+    DaemonController* d;
 }
 
 -(IBAction)preferences:(id)sender;

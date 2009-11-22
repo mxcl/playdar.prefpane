@@ -1,30 +1,15 @@
-//
-//  StatusItemController.m
-//  Playdar.prefPane
-//
-//  Created by Max Howell on 18/11/2009.
-//  Copyright 2009 Methylblue. All rights reserved.
-//
-
 #import "StatusItemController.h"
+#import "DaemonController.h"
 
 static NSString* prefpane_path()
 {
     return [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"../../../"];
 }
 
-static bool playdarctl(NSString* cmd)
-{
-    NSString* path = [prefpane_path() stringByAppendingPathComponent:@"bin/playdarctl"];
-    NSTask* task = [NSTask launchedTaskWithLaunchPath:path arguments:[NSArray arrayWithObject:cmd]];
-    [task waitUntilExit];
-    return task.terminationStatus == 0;
-}
-
 
 @implementation StatusItemController
 
--(void)reflectState
+-(void)setState:(bool)on
 {
     NSString* s = on ? @"Turn Playdar Off" : @"Turn Playdar On";
     NSString* image = on ? @"on.png" : @"off.png";
@@ -40,9 +25,10 @@ static bool playdarctl(NSString* cmd)
     [status_item setAlternateImage:[NSImage imageNamed:@"pressed.png"]];
     [status_item setEnabled:YES];
     [status_item setMenu:menu];
-    
-    on = playdarctl(@"ping");
-    [self reflectState];
+
+    d = [[DaemonController alloc] initWithDelegate:self andRootDir:prefpane_path()];
+
+    [self setState:[d isRunning]];
 }
 
 -(void)preferences:(id)sender
@@ -52,10 +38,28 @@ static bool playdarctl(NSString* cmd)
 
 -(void)togglePlaydar:(id)sender
 {    
-    if (playdarctl(on ? @"stop" : @"start")) {
-        on = !on;
-        [self reflectState];
+    if ([d isRunning]){
+        [self setState:false];
+        [d stop];
+    }else{
+        [self setState:true];
+        [d start];
     }
+}
+
+-(void)playdarIsStarting
+{}
+-(void)playdarIsStopping
+{}
+
+-(void)playdarStarted:(NSNumber*)num_files
+{
+    [self setState:true];
+}
+
+-(void)playdarStopped
+{
+    [self setState:false];
 }
 
 -(void)viewLog:(id)sender
