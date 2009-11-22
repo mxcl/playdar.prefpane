@@ -45,12 +45,14 @@
 }
 
 -(void)mainViewDidLoad
-{   
+{
     [[popup menu] addItem:[NSMenuItem separatorItem]];
     [[[popup menu] addItemWithTitle:@"Other…" action:@selector(onSelect:) keyEquivalent:@""] setTarget:self];
 
     NSString* home = NSHomeDirectory();
-    [self addFolder:[home stringByAppendingPathComponent:@"Music"] setSelected:true];
+    NSString* user_path = [[NSUserDefaults standardUserDefaults] objectForKey:@"org.playdar.MusicPath"];
+    if (user_path) [self addFolder:user_path setSelected:true];
+    [self addFolder:[home stringByAppendingPathComponent:@"Music"] setSelected:!user_path];
     [self addFolder:home setSelected:false];
 
     d = [[DaemonController alloc] initWithDelegate:self andRootDir:[[self bundle] bundlePath]];
@@ -276,7 +278,9 @@
            contextInfo:(void*)contextInfo 
 {
     if(returnCode == NSOKButton) {
-        [self addFolder:[panel filename] setSelected:true];
+        NSString* path = [panel filename];
+        [self addFolder:path setSelected:true];
+        [[NSUserDefaults standardUserDefaults] setObject:path forKey:@"org.playdar.MusicPath"];
     } else
         [popup selectItemAtIndex:0];
 }
