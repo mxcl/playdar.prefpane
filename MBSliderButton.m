@@ -138,22 +138,33 @@
 
 -(void)setState:(NSInteger)newstate
 {
+    [self setState:newstate animate:true];
+}
+
+-(void)setState:(NSInteger)newstate animate:(bool)animate
+{
     if(newstate == [self state])
         return;
 
-    //TODO animate this if we're visible and not in the awakeFromNib bit
-    state = newstate ? NSOnState : NSOffState;
-    location.x = state ? KNOB_MAX_X : 0;
-    [self setNeedsDisplay:YES];
+    int x = newstate == NSOnState ? KNOB_MAX_X : 0;
+
+    //TODO animate if  we are visible and otherwise don't
+    if(animate)
+        [self animateTo:x];
+    else
+        [self setNeedsDisplay:YES];
+
+    state = newstate == NSOnState ? true : false;
+    location.x = x;
 }
 
 -(void)offsetLocationByX:(float)x
 {
     location.x = location.x + x;
-    
+
     if (location.x < KNOB_MIN_X) location.x = KNOB_MIN_X;
     if (location.x > KNOB_MAX_X) location.x = KNOB_MAX_X;
-    
+
     [self setNeedsDisplay:YES];
 }
 

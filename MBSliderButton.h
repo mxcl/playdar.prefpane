@@ -34,5 +34,6 @@
 
 -(NSInteger)state;
 -(void)setState:(NSInteger)newstate;
+-(void)setState:(NSInteger)newstate animate:(bool)animate;
 
 @end

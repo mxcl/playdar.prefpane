@@ -143,7 +143,7 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     pid = playdar_pid();
     if(pid){
         kqueue_watch_pid(pid, self); // watch the pid for termination
-        [big_switch setState:NSOnState];
+        [big_switch setState:NSOnState animate:false];
         [demos setHidden:false];
         [self showTrackCount:[self numFiles]];
     }
