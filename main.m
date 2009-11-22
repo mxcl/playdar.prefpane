@@ -21,102 +21,15 @@
 //TODO remember path that we scanned with defaults controller
 
 #import "main.h"
-#include <Sparkle/SUUpdater.h>
-#include <sys/sysctl.h>
-
-
-/** returns the pid of the running playdar instance, or 0 if not found */
-static pid_t playdar_pid()
-{
-    int mib[4] = { CTL_KERN, KERN_PROC, KERN_PROC_ALL, 0 };
-    struct kinfo_proc *info;
-    size_t N;
-    pid_t pid = 0;
-    
-    if(sysctl(mib, 3, NULL, &N, NULL, 0) < 0)
-        return 0; //wrong but unlikely
-    if(!(info = NSZoneMalloc(NULL, N)))
-        return 0; //wrong but unlikely
-    if(sysctl(mib, 3, info, &N, NULL, 0) < 0)
-        goto end;
-
-    N = N / sizeof(struct kinfo_proc);
-    for(size_t i = 0; i < N; i++)
-        if(strcmp(info[i].kp_proc.p_comm, "playdar.smp") == 0)
-            { pid = info[i].kp_proc.p_pid; break; }
-end:
-    NSZoneFree(NULL, info);
-    return pid;
-}
-
-static void kqueue_termination_callback(CFFileDescriptorRef f, CFOptionFlags callBackTypes, void* self)
-{
-    [(id)self performSelector:@selector(daemonTerminated:) withObject:nil];
-}
-
-static inline void kqueue_watch_pid(pid_t pid, id self)
-{
-    int                     kq;
-    struct kevent           changes;
-    CFFileDescriptorContext context = { 0, self, NULL, NULL, NULL };
-    CFRunLoopSourceRef      rls;
-
-    // Create the kqueue and set it up to watch for SIGCHLD. Use the 
-    // new-in-10.5 EV_RECEIPT flag to ensure that we get what we expect.
-
-    kq = kqueue();
-
-    EV_SET(&changes, pid, EVFILT_PROC, EV_ADD | EV_RECEIPT, NOTE_EXIT, 0, NULL);
-    (void) kevent(kq, &changes, 1, &changes, 1, NULL);
-
-    // Wrap the kqueue in a CFFileDescriptor (new in Mac OS X 10.5!). Then 
-    // create a run-loop source from the CFFileDescriptor and add that to the 
-    // runloop.
-    
-    CFFileDescriptorRef ref;
-    ref = CFFileDescriptorCreate(NULL, kq, true, kqueue_termination_callback, &context);
-    rls = CFFileDescriptorCreateRunLoopSource(NULL, ref, 0);
-    CFRunLoopAddSource(CFRunLoopGetCurrent(), rls, kCFRunLoopDefaultMode);
-    CFRelease(rls);
-    
-    CFFileDescriptorEnableCallBacks(ref, kCFFileDescriptorReadCallBack);
-}
-
-#define START_POLL poll_timer = [NSTimer scheduledTimerWithTimeInterval:0.4 target:self selector:@selector(poll:) userInfo:nil repeats:true];
+#import "Sparkle/SUUpdater.h"
+#import "DaemonController.h"
 
 
 @implementation OrgPlaydarPreferencePane
 
--(NSString*)startScriptPath
-{
-    return [[[self bundle] bundlePath] stringByAppendingPathComponent:@"Contents/MacOS/erlexec_playdar"];
-}
-
--(NSString*)playdarctl
-{
-    return [[[self bundle] bundlePath] stringByAppendingPathComponent:@"bin/playdarctl"];
-}
-
--(NSString*)playdarConfDir
+-(NSString*)etc
 {
     return [NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/org.playdar"];
-}
-
--(int)numFiles
-{
-    NSTask* task = [[NSTask alloc] init];
-    [task setLaunchPath:[self playdarctl]];
-    [task setArguments:[NSArray arrayWithObject:@"numfiles"]];
-    [task setStandardOutput:[NSPipe pipe]]; 
-    [task launch];
-    [task waitUntilExit];
-    
-    // if not zero then we library module isn't ready yet
-    if (task.terminationStatus != 0)
-        return -1;
-    
-    NSData* data = [[[task standardOutput] fileHandleForReading] readDataToEndOfFile];
-    return [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] intValue];
 }
 
 -(void)showTrackCount:(int)n
@@ -140,16 +53,14 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     [self addFolder:[home stringByAppendingPathComponent:@"Music"] setSelected:true];
     [self addFolder:home setSelected:false];
 
-    pid = playdar_pid();
-    if(pid){
-        kqueue_watch_pid(pid, self); // watch the pid for termination
+    d = [[DaemonController alloc] initWithDelegate:self andRootDir:[[self bundle] bundlePath]];
+
+    if ([d isRunning]) {
         [big_switch setState:NSOnState animate:false];
         [demos setHidden:false];
-        [self showTrackCount:[self numFiles]];
+        [self showTrackCount:[d numFiles]];
     }
-    else
-        START_POLL;
-    
+
 ////// Sparkle
     SUUpdater* updater = [SUUpdater updaterForBundle:[self bundle]];
     [updater resetUpdateCycle];
@@ -199,11 +110,11 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
 {
     @try {
         scanner_task = [[NSTask alloc] init];
-        scanner_task.launchPath = [self playdarctl];
+        scanner_task.launchPath = [d playdarctl];
         scanner_task.arguments = [NSArray arrayWithObjects:@"scan", [popup titleOfSelectedItem], nil];
         [scanner_task launch];
 
-        [scan_spinner startAnimation:self];
+        [on_spinner startAnimation:self];
         [scanning setStringValue:@"Scanning…"];
         [scanning setHidden:NO];
 
@@ -212,7 +123,7 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
                                                      name:NSTaskDidTerminateNotification
                                                    object:scanner_task];
 
-        [scan_spinner startAnimation:self];
+        [on_spinner startAnimation:self];
     }
     @catch (NSException* e)
     {
@@ -222,105 +133,9 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
 
 -(void)scanComplete:(NSNotification*)note
 {
-    [self showTrackCount:[self numFiles]];
-    [scan_spinner stopAnimation:self];
+    [self showTrackCount:[d numFiles]];
+    [on_spinner stopAnimation:self];
     [self fadeInDemoButton];
-}
-
--(void)poll:(NSTimer*)_poll_timer
-{
-    if(pid = playdar_pid()){
-        [poll_timer invalidate];
-        poll_timer = nil;
-        kqueue_watch_pid(pid, self);
-        [big_switch setState:NSOnState];
-    }
-}
-
--(void)stop
-{
-    NSTask* task = [[NSTask alloc] init];
-    task.launchPath = [self playdarctl];
-    task.arguments = [NSArray arrayWithObjects:@"stop", nil];
-
-    [spinner startAnimation:self];
-    [task launch];
-    [task waitUntilExit];
-    
-    if (task.terminationStatus == 0) {
-        daemon_task = nil;
-        [spinner stopAnimation:self];
-        [self fadeOutDemoButton];
-        return;
-    }
-
-    if(daemon_task)
-        [daemon_task terminate];
-    else if(pid == 0)
-        ; // state machine error!
-    else if(kill(pid, SIGKILL) == -1 && errno != ESRCH){
-        [big_switch setState:NSOnState];
-        NSRunCriticalAlertPanel(@"Could not kill daemon",
-                                @"Perhaps you don't have the right permissions?", nil, nil, nil);
-    }else{
-        // the kqueue event will tell us when the process exits
-    }    
-}
-
--(void)start
-{
-    daemon_task = [[NSTask alloc] init];
-    [daemon_task setLaunchPath:[self startScriptPath]];
-    [daemon_task setArguments:[NSArray arrayWithObject:@"-d"]];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(daemonTerminated:)
-                                                 name:NSTaskDidTerminateNotification
-                                               object:daemon_task];
-    [daemon_task launch];
-    pid = [daemon_task processIdentifier];
-
-    [scan_spinner startAnimation:self];
-
-    #define CHECK_READY_FOR_SCAN \
-        [self performSelector:@selector(checkReadyForScan) withObject:nil afterDelay:0.2];
-
-    CHECK_READY_FOR_SCAN
-}
-
--(void)checkReadyForScan
-{
-    int const n = [self numFiles];
-    
-    if (n < 0) {
-        CHECK_READY_FOR_SCAN
-        [scanning setHidden:NO];
-        [scanning setStringValue:@"Playdar is starting up…"];
-    } else if (n == 0) {
-        [self scan];
-    } else {
-        [self showTrackCount:n];
-        [scan_spinner stopAnimation:self];
-        [self fadeInDemoButton];
-    }
-}
-
--(void)startInTerminal
-{
-    daemon_task = [[NSTask alloc] init];
-    [daemon_task setLaunchPath:@"/usr/bin/open"];
-    [daemon_task setArguments:[NSArray arrayWithObjects:[self startScriptPath], @"-aTerminal", nil]];
-    [daemon_task launch];
-
-    pid = -100; //HACK
-    [daemon_task waitUntilExit];
-    pid = playdar_pid();
-    daemon_task = nil;
-
-    if(pid)
-        kqueue_watch_pid(pid, self);
-    else
-        [big_switch setState:NSOffState]; 
 }
 
 -(NSString*)menuItemAppPath
@@ -368,66 +183,75 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     CFRelease(login_items_ref);
 }
 
--(void)onEnable:(id)sender
+-(void)playdarIsStarting
 {
-    if ([big_switch state] == NSOffState) {
-        [self stop];
-        return;
-    }
+    [on_spinner startAnimation:self];
+    [big_switch setState:NSOnState];
+}
 
-    [poll_timer invalidate];
-    poll_timer=nil;
-    
-    pid = playdar_pid();
-    
-    if(!pid){
-        @try{
-            if(NSAlternateKeyMask & [[NSApp currentEvent] modifierFlags])
-                [self startInTerminal];
-            else
-                [self start];
-            
-            [self startAtLogin:true];
-        }
-        @catch(NSException* e)
-        {
-            NSString* msg = @"The file at “";
-            msg = [msg stringByAppendingString:[daemon_task launchPath]];
-            msg = [msg stringByAppendingString:@"” could not be executed."];
-            
-            NSBeginAlertSheet(@"Could not start Playdar",
-                              nil, nil, nil,
-                              [[self mainView] window],
-                              self,
-                              nil, nil,
-                              nil,
-                              msg );
-            daemon_task = nil;
-        }
-    }else{
-        // unexpectedly there is already a playdar instance running!
-        kqueue_watch_pid(pid, self);
+-(void)playdarFailedToStart:(NSString*)emsg
+{
+    NSBeginAlertSheet(@"Could not start Playdar",
+                      nil, nil, nil,
+                      [[self mainView] window], self,
+                      nil, nil, nil,
+                      emsg );
+
+    [self startAtLogin:NO];
+    [big_switch setState:NSOffState]; //TODO do both simultaneously
+    [self fadeOutDemoButton];         //TODO this one too see
+    [on_spinner stopAnimation:self];
+}
+
+-(void)playdarStarted:(NSNumber*)n
+{
+    int num_files = [n intValue];
+
+    [self startAtLogin:YES];
+    [big_switch setState:NSOnState];
+
+    if(num_files == 0)
+        [self scan];
+    else {
+        [self showTrackCount:num_files];
+        [on_spinner stopAnimation:self];
+        [self fadeInDemoButton];
     }
 }
 
--(void)daemonTerminated:(NSNotification*)note
-{  
-    [[NSNotificationCenter defaultCenter] removeObserver:self 
-                                                    name:NSTaskDidTerminateNotification 
-                                                  object:daemon_task];
-
-    daemon_task = nil;
-    pid = 0;
-        
-    [NSObject cancelPreviousPerformRequestsWithTarget:spinner];
-    [NSObject cancelPreviousPerformRequestsWithTarget:self]; // FIXME a bit stupid no?
-    [spinner stopAnimation:self];
-    [scan_spinner stopAnimation:self];
-    [self fadeOutDemoButton];
+-(void)playdarIsStopping
+{
     [big_switch setState:NSOffState];
-    [big_switch setEnabled:true];
+    [off_spinner startAnimation:self];
+}
+
+-(void)playdarFailedToStop:(NSString*)emsg
+{
+    NSBeginAlertSheet(@"Could not stop Playdar",
+                      nil, nil, nil,
+                      [[self mainView] window], self,
+                      nil, nil, nil,
+                      emsg);
+}
+
+-(void)playdarStopped
+{
+    [NSObject cancelPreviousPerformRequestsWithTarget:off_spinner];
+
+    [big_switch setState:NSOffState];
+    [off_spinner stopAnimation:self];
+    [self fadeOutDemoButton];
     [self startAtLogin:false];
-    START_POLL;
+}
+
+-(void)onEnable:(id)sender
+{
+    if ([big_switch state] == NSOffState)
+        [d stop];
+    else if (NSAlternateKeyMask & [[NSApp currentEvent] modifierFlags])
+        [d startInTerminal];
+    else
+        [d start];
 }
 
 ////// Directory selector
@@ -486,7 +310,7 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
 -(IBAction)onEditConfigFile:(id)sender;
 {
     NSFileManager* fm = [NSFileManager defaultManager];
-    NSString* conf = [self playdarConfDir];
+    NSString* conf = [self etc];
     
     if (![fm fileExistsAtPath:conf]) {       
         NSTask * task = [[NSTask alloc] init];
@@ -536,7 +360,7 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
 
 -(void)updaterWillRelaunchApplication:(SUUpdater*)updater
 {
-    if(pid) kill(pid, SIGKILL);
+    [d stop];
 }
 
 -(NSString*)pathToRelaunchForUpdater:(SUUpdater*)updater

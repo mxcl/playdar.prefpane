@@ -12,8 +12,6 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="324"/>
-			<integer value="172"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -51,7 +49,7 @@
 				</object>
 				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<object class="NSView" key="NSWindowView" id="1037298196">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">272</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -365,7 +363,6 @@
 						</object>
 					</object>
 					<string key="NSFrameSize">{668, 344}</string>
-					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
@@ -381,7 +378,7 @@
 				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<string key="NSWindowContentMinSize">{444, 196}</string>
 				<object class="NSView" key="NSWindowView" id="332060182">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -673,7 +670,6 @@
 						</object>
 					</object>
 					<string key="NSFrameSize">{465, 295}</string>
-					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{444, 218}</string>
@@ -768,22 +764,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">spinner</string>
-						<reference key="source" ref="294453543"/>
-						<reference key="destination" ref="1047322050"/>
-					</object>
-					<int key="connectionID">337</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">scan_spinner</string>
-						<reference key="source" ref="294453543"/>
-						<reference key="destination" ref="809672898"/>
-					</object>
-					<int key="connectionID">338</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
 						<string key="label">prefpane</string>
 						<reference key="source" ref="801010874"/>
 						<reference key="destination" ref="294453543"/>
@@ -837,6 +817,22 @@
 						</object>
 					</object>
 					<int key="connectionID">361</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">on_spinner</string>
+						<reference key="source" ref="294453543"/>
+						<reference key="destination" ref="809672898"/>
+					</object>
+					<int key="connectionID">362</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">off_spinner</string>
+						<reference key="source" ref="294453543"/>
+						<reference key="destination" ref="1047322050"/>
+					</object>
+					<int key="connectionID">363</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1390,7 +1386,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">361</int>
+			<int key="maxID">363</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1473,20 +1469,20 @@
 							<string>advanced_window</string>
 							<string>big_switch</string>
 							<string>demos</string>
+							<string>off_spinner</string>
+							<string>on_spinner</string>
 							<string>popup</string>
-							<string>scan_spinner</string>
 							<string>scanning</string>
-							<string>spinner</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>NSWindow</string>
 							<string>MBSliderButton</string>
 							<string>NSButton</string>
+							<string>NSProgressIndicator</string>
+							<string>NSProgressIndicator</string>
 							<string>NSPopUpButton</string>
-							<string>NSProgressIndicator</string>
 							<string>NSTextField</string>
-							<string>NSProgressIndicator</string>
 						</object>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">

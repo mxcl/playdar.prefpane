@@ -19,6 +19,8 @@
 #import <PreferencePanes/PreferencePanes.h>
 #import "MBSliderButton.h"
 
+@class DaemonController;
+
 // long class name is because we get loaded into System Preferences process, so 
 // we are required to be ultra verbose
 // http://developer.apple.com/documentation/UserExperience/Conceptual/PreferencePanes/Tasks/Conflicts.html
@@ -28,15 +30,12 @@
     IBOutlet MBSliderButton* big_switch;
     IBOutlet NSButton* demos;
     IBOutlet NSWindow* advanced_window;
-    IBOutlet NSProgressIndicator* spinner;
-    IBOutlet NSProgressIndicator* scan_spinner;
+    IBOutlet NSProgressIndicator* off_spinner;
+    IBOutlet NSProgressIndicator* on_spinner;
     IBOutlet NSTextField* scanning;
-    
-    NSTask* daemon_task;
+
     NSTask* scanner_task;
-    NSTimer* poll_timer;
-    NSTimer* check_startup_status_timer;
-    pid_t pid;
+    DaemonController* d;
 }
 
 -(void)mainViewDidLoad;
