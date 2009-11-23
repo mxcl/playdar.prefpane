@@ -67,7 +67,7 @@
     SUUpdater* updater = [SUUpdater updaterForBundle:[self bundle]];
     [updater resetUpdateCycle];
     [updater setDelegate:self];
-    
+
     if([[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask)
         [updater checkForUpdates:self];
 }
@@ -311,12 +311,19 @@
     return [[[self bundle] bundlePath] stringByAppendingPathComponent:@"playdar_modules"];
 }
 
+static bool has_conf_files(NSString* path)
+{
+    for (NSString* f in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:NULL])
+        if ([f hasSuffix:@".conf"])
+            return true;
+    return false;
+}
+
 -(IBAction)onEditConfigFile:(id)sender;
 {
-    NSFileManager* fm = [NSFileManager defaultManager];
     NSString* conf = [self etc];
     
-    if (![fm fileExistsAtPath:conf]) {       
+    if (!has_conf_files(conf)) {
         NSTask * task = [[NSTask alloc] init];
         task.launchPath = @"/usr/bin/tar";
         task.arguments = [NSArray arrayWithObjects:@"xjf", [[self bundle] pathForResource:@"confs" ofType:@"tbz"], nil];
