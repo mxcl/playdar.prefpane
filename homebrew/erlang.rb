@@ -138,7 +138,7 @@ end
 
 __END__
 #!/bin/sh
-mkdir -p ~/Library/Preferences/org.playdar ~/Library/Application\ Support/Playdar
+mkdir -p ~/Library/Application\ Support/Playdar
 
 export ROOTDIR="`cd $(dirname $0)/.. && pwd`"
 export BINDIR=$ROOTDIR/bin
