@@ -325,7 +325,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd $PROJECT_TEMP_DIR/$CONFIGURATION$EFFECTIVE_PLATFORM_NAME\n\nmkdir -p org.playdar\nORG_PLAYDAR=$PWD/org.playdar\n\nfor x in `find $OBJROOT/Cellar/playdar -name \\*.conf.example`\ndo\n\tmv $x $ORG_PLAYDAR/`basename $x .example`\ndone\n\ncd $ORG_PLAYDAR/..\ntar cjf $CODESIGNING_FOLDER_PATH/Contents/Resources/confs.tbz org.playdar\n\nd=$OBJROOT/Cellar/playdar/etc\ntest -d $d && rmdir $d || true";
+			shellScript = "cd $PROJECT_TEMP_DIR/$CONFIGURATION$EFFECTIVE_PLATFORM_NAME\n\nmkdir -p org.playdar\nORG_PLAYDAR=$PWD/org.playdar\n\nfor x in `find $OBJROOT/Cellar/playdar -name \\*.conf.example`\ndo\n\tcp $x $ORG_PLAYDAR/`basename $x .example`\ndone\n\ncd $ORG_PLAYDAR/..\ntar cjf $CODESIGNING_FOLDER_PATH/Contents/Resources/confs.tbz org.playdar\n";
 		};
 		63707AB210B0C69A0013AF85 /* Copy Erlang and Playdar */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -349,7 +349,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -rf $OBJROOT/Cellar/playdar/* $CODESIGNING_FOLDER_PATH\ncp -rf $OBJROOT/Cellar/erlang/* $CODESIGNING_FOLDER_PATH";
+			shellScript = "cp -rf $OBJROOT/Cellar/playdar/* $CODESIGNING_FOLDER_PATH\ncp -rf $OBJROOT/Cellar/erlang/* $CODESIGNING_FOLDER_PATH\n\nfind $CODESIGNING_FOLDER_PATH/playdar_modules -name \\*.conf.example -delete\nrm -rf $CODESIGNING_FOLDER_PATH/etc";
 		};
 		63D4A44910B329BD00FE8ED2 /* Build Taglib, Erlang and Playdar */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -364,6 +364,7 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/usr/bin/make -f";
 			shellScript = "HOMEBREW = $(SRCROOT)/homebrew\nCELLAR = $(OBJROOT)/Cellar\n\n.PHONY: all\n\nall: $(CELLAR)/taglib/libtag.a $(CELLAR)/playdar/bin/playdarctl $(CELLAR)/erlang/bin/erlc\n\n$(CELLAR)/taglib/libtag.a: $(HOMEBREW)/taglib.rb\n\tcd \"$(<D)\" && brew install -f $(<F)\n\n$(CELLAR)/playdar/bin/playdarctl: $(HOMEBREW)/playdar.rb $(CELLAR)/taglib/libtag.a\n\tcd \"$(<D)\" && brew install -f $(<F)\n\n$(CELLAR)/erlang/bin/erlc: $(HOMEBREW)/erlang.rb\n\tcd \"$(<D)\" && brew install -f $(<F)\n";
+			showEnvVarsInLog = 0;
 		};
 		63E80F0610B87CAE0094A6E6 /* Hard link ICNS file */ = {
 			isa = PBXShellScriptBuildPhase;
