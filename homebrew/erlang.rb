@@ -41,7 +41,6 @@ class Erlang <PlaydarPrefPaneFormula
     orber
     os_mon
     otp_mibs
-    parsetools
     percept
     pman
     public_key
