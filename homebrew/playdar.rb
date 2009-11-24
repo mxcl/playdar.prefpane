@@ -33,6 +33,7 @@ class Playdar <PlaydarPrefPaneFormula
     (prefix+'contrib').install 'contrib/demo-script'
 
     prefix.install 'bin'
+    prefix.install 'Makefile'
 
     system "strip #{prefix}/playdar_modules/library/priv/taglib_driver/taglib_json_reader"
   end
