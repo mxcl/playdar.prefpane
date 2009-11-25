@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		638168BE10B0D5AF00CADBD5 /* erlexec_playdar in Copy erlexec_playdar */ = {isa = PBXBuildFile; fileRef = 638168B110B0D5AA00CADBD5 /* erlexec_playdar */; };
 		639969C3108E401800F7CE1F /* MBSliderButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 639969C2108E401800F7CE1F /* MBSliderButton.m */; };
 		639969CA108E40B300F7CE1F /* button_surround.png in Resources */ = {isa = PBXBuildFile; fileRef = 639969C8108E40B300F7CE1F /* button_surround.png */; };
 		639969CB108E40B300F7CE1F /* button_knob.png in Resources */ = {isa = PBXBuildFile; fileRef = 639969C9108E40B300F7CE1F /* button_knob.png */; };
@@ -45,7 +44,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 6;
 			files = (
-				638168BE10B0D5AF00CADBD5 /* erlexec_playdar in Copy erlexec_playdar */,
 			);
 			name = "Copy erlexec_playdar";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -68,7 +66,6 @@
 		089C167FFE841241C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		32DBCFA20370C41700C91783 /* pc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pc.h; sourceTree = "<group>"; };
-		638168B110B0D5AA00CADBD5 /* erlexec_playdar */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = erlexec_playdar; sourceTree = "<group>"; };
 		639969C1108E401800F7CE1F /* MBSliderButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBSliderButton.h; sourceTree = "<group>"; };
 		639969C2108E401800F7CE1F /* MBSliderButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBSliderButton.m; sourceTree = "<group>"; };
 		639969C8108E40B300F7CE1F /* button_surround.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = button_surround.png; sourceTree = "<group>"; };
@@ -192,7 +189,6 @@
 			isa = PBXGroup;
 			children = (
 				32DBCFA20370C41700C91783 /* pc.h */,
-				638168B110B0D5AA00CADBD5 /* erlexec_playdar */,
 				63E814A310B8D6AB0094A6E6 /* DaemonController.h */,
 				63E814A410B8D6AB0094A6E6 /* DaemonController.m */,
 			);

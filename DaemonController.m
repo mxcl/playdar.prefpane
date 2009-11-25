@@ -82,11 +82,6 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     return daemon_task && [daemon_task isRunning] || (pid = playdar_pid());
 }
 
--(NSString*)erlexec_playdar
-{
-    return [root stringByAppendingPathComponent:@"Contents/MacOS/erlexec_playdar"];
-}
-
 -(NSString*)playdarctl
 {
     return [root stringByAppendingPathComponent:@"bin/playdarctl"];
@@ -153,10 +148,10 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
 
 -(void)start
 {
-    @try {
+    @try {       
         [self initDaemonTask];
-        daemon_task.launchPath = [self erlexec_playdar];
-        daemon_task.arguments = [NSArray arrayWithObject:@"-d"];
+        daemon_task.launchPath = [self playdarctl];
+        daemon_task.arguments = [NSArray arrayWithObject:@"start-exec"];
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(daemonTerminated:)
@@ -177,10 +172,15 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
 
 -(void)startInTerminal
 {
+    NSMutableString* script = [@"tell application \"Terminal\" to do script \"" mutableCopy];
+    [script appendString:root];
+    [script appendString:@"/bin/playdarctrl start-debug; exit\""];
+    
     @try {
         [self initDaemonTask];
-        [daemon_task setLaunchPath:@"/usr/bin/open"];
-        [daemon_task setArguments:[NSArray arrayWithObjects:[self erlexec_playdar], @"-aTerminal", nil]];
+        daemon_task.launchPath = @"/usr/bin/osascript";
+        daemon_task.arguments = [NSArray arrayWithObjects:@"-e", script, nil];
+        daemon_task.environment = [NSDictionary dictionaryWithObject:root forKey:@"PLAYDAR_ROOT"];
         [daemon_task launch];
         [daemon_task waitUntilExit];
         
