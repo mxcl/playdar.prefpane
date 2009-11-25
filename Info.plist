@@ -21,7 +21,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>0.1.11</string>
+	<string>0.1.12</string>
 	<key>NSMainNibFile</key>
 	<string>main</string>
 	<key>NSPrefPaneIconFile</key>
@@ -32,6 +32,8 @@
 	<string>OrgPlaydarPreferencePane</string>
 	<key>CFBundleDisplayName</key>
 	<string>Playdar</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>© Max Howell, 2009</string>
 	<key>SUEnalbeAutomaticChecks</key>
 	<true/>
 	<key>SUAllowsAutomaticUpdates</key>

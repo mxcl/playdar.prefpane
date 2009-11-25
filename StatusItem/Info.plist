@@ -15,7 +15,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.1.11</string>
+	<string>0.1.12</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
@@ -28,6 +28,8 @@
 	<string>NSApplication</string>
 	<key>LSUIElement</key>
 	<true/>
+	<key>NSHumanReadableCopyright</key>
+	<string>© Max Howell, 2009</string>
 	<key>LSMinimumSystemVersionByArchitecture</key>
 	<dict>
 		<key>i386</key>
