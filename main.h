@@ -35,7 +35,9 @@
     IBOutlet NSTextField* scanning;
 
     NSTask* scanner_task;
+    NSFileHandle* scanner_read_handle;
     DaemonController* d;
+    int count;
 }
 
 -(void)mainViewDidLoad;

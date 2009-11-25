@@ -32,16 +32,19 @@
     return [NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/org.playdar"];
 }
 
--(void)showTrackCount:(int)n
+static NSString* localized_number(NSUInteger n)
 {
-    NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
+    static NSNumberFormatter* formatter = 0;
+    if(!formatter) formatter = [[NSNumberFormatter alloc] init];
     [formatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
     [formatter setFormat: @"#,###"];
-    NSString* tracks = [formatter stringFromNumber:[NSNumber numberWithInt:n]];
-    [formatter release];
-    
+    return [formatter stringFromNumber:[NSNumber numberWithInt:n]];
+}
+
+-(void)showTrackCount:(int)n
+{  
     [scanning setHidden:NO];        
-    [scanning setStringValue:[tracks stringByAppendingString:@" local tracks known to Playdar"]];
+    [scanning setStringValue:[localized_number(n) stringByAppendingString:@" local tracks known to Playdar"]];
 }
 
 -(void)mainViewDidLoad
@@ -111,20 +114,32 @@
 -(void)scan
 {
     @try {
+        count = 0;
+        
+        NSPipe* pipe = [NSPipe pipe];
+        scanner_read_handle = [pipe fileHandleForReading];
+        [scanner_read_handle readInBackgroundAndNotify];
+
         scanner_task = [[NSTask alloc] init];
         scanner_task.launchPath = [d playdarctl];
         scanner_task.arguments = [NSArray arrayWithObjects:@"scan", [popup titleOfSelectedItem], nil];
+        [scanner_task setStandardOutput:pipe];
+
         [scanner_task launch];
 
+        [popup setEnabled:false];
         [on_spinner startAnimation:self];
         [scanning setStringValue:@"Scanning…"];
         [scanning setHidden:NO];
 
         [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(scanProgress:)
+                                                     name:NSFileHandleReadCompletionNotification
+                                                   object:scanner_read_handle];
+        [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(scanComplete:)
                                                      name:NSTaskDidTerminateNotification
                                                    object:scanner_task];
-
         [on_spinner startAnimation:self];
     }
     @catch (NSException* e)
@@ -133,11 +148,33 @@
     }
 }
 
+-(void)scanProgress:(NSNotification*)note
+{
+    NSData* data = [[note userInfo] objectForKey:NSFileHandleNotificationDataItem];
+    NSString* string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+
+    // -1 because the string always ends with a \n
+    count += [[string componentsSeparatedByString:@"\n"] count] - 1;
+
+    [scanning setStringValue:[localized_number(count) stringByAppendingString:@" files scanned"]];
+
+    if([scanner_task isRunning])
+        [scanner_read_handle readInBackgroundAndNotify];
+}
+
 -(void)scanComplete:(NSNotification*)note
 {
-    [self showTrackCount:[d numFiles]];
+    int n = [d numFiles];
     [on_spinner stopAnimation:self];
-    [self fadeInDemoButton];
+    [popup setEnabled:true];
+    
+    if(n > 0) {
+        [self showTrackCount:n];
+        [self fadeInDemoButton];
+    }else{
+        // prolly because playdar was turned off
+        [scanning setHidden:true];
+    }
 }
 
 -(NSString*)menuItemAppPath
@@ -225,6 +262,7 @@
 {
     [big_switch setState:NSOffState];
     [off_spinner startAnimation:self];
+    [on_spinner stopAnimation:self];
 }
 
 -(void)playdarFailedToStop:(NSString*)emsg
@@ -241,6 +279,7 @@
     [NSObject cancelPreviousPerformRequestsWithTarget:off_spinner];
 
     [big_switch setState:NSOffState];
+    [on_spinner stopAnimation:self];
     [off_spinner stopAnimation:self];
     [self fadeOutDemoButton];
     [self startAtLogin:false];
