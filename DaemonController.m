@@ -144,6 +144,7 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     [delegate performSelector:@selector(playdarFailedToStart:) withObject:msg];
 
     daemon_task = nil;
+    [msg release];
 }
 
 -(void)start
@@ -191,6 +192,8 @@ static inline void kqueue_watch_pid(pid_t pid, id self)
     @catch (NSException* e) {
         [self failedToStartDaemonTask];
     }
+     
+    [script release];
 }
 
 -(void)checkReadyForScan
