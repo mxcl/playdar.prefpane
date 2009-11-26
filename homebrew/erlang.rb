@@ -14,9 +14,9 @@ exec bin/erlexec ${1+"$@"}
 EOS
 
 class Erlang <PlaydarPrefPaneFormula
-  url 'http://erlang.org/download/otp_src_R13B02-1.tar.gz'
-  md5 '2593b9312eb1b15bf23a968743138c52'
-  version 'R13B02-1'
+  version 'R13B03'
+  url "http://erlang.org/download/otp_src_#{version}.tar.gz"
+  md5 '411fcb29f0819973f71e28f6b56d9948'
   homepage 'http://www.erlang.org'
 
   depends_on 'icu4c'
