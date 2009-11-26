@@ -78,10 +78,11 @@ static NSString* localized_number(NSUInteger n)
 -(void)addFolder:(NSString*)path setSelected:(bool)select
 {
     int const index = [[popup menu] numberOfItems]-2;
-    NSMenuItem* item = [[popup menu] insertItemWithTitle:path action:nil keyEquivalent:@"" atIndex:index];
+    NSMenuItem* item = [[popup menu] insertItemWithTitle:path action:@selector(scan:) keyEquivalent:@"" atIndex:index];
     NSImage* image = [[NSWorkspace sharedWorkspace] iconForFile:path];
     [image setSize:NSMakeSize(16, 16)];
     [item setImage:image];
+    [item setTarget:self];
     if(select) [popup selectItemAtIndex:index];
 }
 
@@ -111,8 +112,11 @@ static NSString* localized_number(NSUInteger n)
     }
 }
 
--(void)scan
+-(void)scan:(id)sender
 {
+    if(![d isRunning] || [scanner_task isRunning])
+        return;
+    
     @try {
         count = 0;
         
@@ -250,7 +254,7 @@ static NSString* localized_number(NSUInteger n)
     [big_switch setState:NSOnState];
 
     if(num_files == 0)
-        [self scan];
+        [self scan:self];
     else {
         [self showTrackCount:num_files];
         [on_spinner stopAnimation:self];
@@ -298,14 +302,11 @@ static NSString* localized_number(NSUInteger n)
 ////// Directory selector
 -(void)onSelect:(id)sender
 {
-    // return if not the Select... item
-    if([popup indexOfSelectedItem] != [popup numberOfItems]-1) return;
-    
     NSOpenPanel* panel = [NSOpenPanel openPanel];
     [panel setCanChooseFiles:NO];
     [panel setCanChooseDirectories:YES];
-    [panel beginSheetForDirectory:nil 
-                             file:nil 
+    [panel beginSheetForDirectory:nil
+                             file:nil
                    modalForWindow:[[self mainView] window]
                     modalDelegate:self
                    didEndSelector:@selector(openPanelDidEnd:returnCode:contextInfo:)
@@ -314,12 +315,13 @@ static NSString* localized_number(NSUInteger n)
 
 -(void)openPanelDidEnd:(NSOpenPanel*)panel
             returnCode:(int)returnCode
-           contextInfo:(void*)contextInfo 
+           contextInfo:(void*)contextInfo
 {
     if(returnCode == NSOKButton) {
         NSString* path = [panel filename];
         [self addFolder:path setSelected:true];
         [[NSUserDefaults standardUserDefaults] setObject:path forKey:@"org.playdar.MusicPath"];
+        [self scan:self];
     } else
         [popup selectItemAtIndex:0];
 }
