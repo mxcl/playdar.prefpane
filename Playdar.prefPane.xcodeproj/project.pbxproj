@@ -229,6 +229,7 @@
 				63E80EDB10B87AD30094A6E6 /* Sources */,
 				63E80EDC10B87AD30094A6E6 /* Frameworks */,
 				63E80F0610B87CAE0094A6E6 /* Hard link ICNS file */,
+				631862DC10BE4AAE00581EEF /* Rename $EXECUTABLE_NAME */,
 			);
 			buildRules = (
 			);
@@ -322,6 +323,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "cd $PROJECT_TEMP_DIR/$CONFIGURATION$EFFECTIVE_PLATFORM_NAME\n\nmkdir -p org.playdar\nORG_PLAYDAR=$PWD/org.playdar\n\nfor x in `find $OBJROOT/Cellar/playdar -name \\*.conf.example`\ndo\n\tcp $x $ORG_PLAYDAR/`basename $x .example`\ndone\n\ncd $ORG_PLAYDAR/..\ntar cjf $CODESIGNING_FOLDER_PATH/Contents/Resources/confs.tbz org.playdar\n";
+		};
+		631862DC10BE4AAE00581EEF /* Rename $EXECUTABLE_NAME */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Rename $EXECUTABLE_NAME";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd $CODESIGNING_FOLDER_PATH/Contents/MacOS\nmv $EXECUTABLE_NAME PlaydarHelper";
 		};
 		63707AB210B0C69A0013AF85 /* Copy Erlang and Playdar */ = {
 			isa = PBXShellScriptBuildPhase;
