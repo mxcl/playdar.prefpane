@@ -12,16 +12,12 @@ Fork It!
 --------
 http://github.com/mxcl/playdar.prefpane/
 
-Build Process
--------------
-$ git submodules init
-$ git submodules update
+Build It
+--------
+The build process requires Homebrew: http://github.com/mxcl/homebrew
 
-Now edit Playdar.prefPane.xcodeproj/Makefile so that boost and taglib are
-referenced correctly (or just use Homebrew! http://github.com/mxcl/homebrew).
-
-Now you can open the Xcode project and it should all build just fine.
+This is to facilitate building the bundled erlang, taglib and playdar-core.
 
 Author
 ======
-Max Howell <max@methylblue.com
+Max Howell <http://twitter.com/mxcl>
